@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "target": "es2020",
+        "allowJs": false,
+        "removeComments": false,
+        "strict": true,
+        "noImplicitAny": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noImplicitReturns": true,
+        "strictPropertyInitialization": false,
+        "outDir": "./dist",
+        "sourceMap": true,
+        "declaration": true,
+        "allowSyntheticDefaultImports": true,
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "baseUrl": "./"
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "dist/**", "tests/**"]
+}
