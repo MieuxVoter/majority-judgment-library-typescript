@@ -1,5 +1,5 @@
 {
-    "name": "jm",
+    "name": "majority-judgment",
     "version": "0.1.0",
     "browserslist": "> 0.5%, last 2 versions, not dead",
     "main": "dist/index",
@@ -7,13 +7,13 @@
     "files": [
         "dist/*",
         "package.json",
-        "LICENSE?",
+        "LICENSE.md",
         "README.md"
     ],
     "author": {
-        "name": "?"
+        "name": "MieuxVoter"
     },
-    "license": "?",
+    "license": "MIT",
     "scripts": {
         "build": "tsc",
         "test": "jest",
