@@ -73,10 +73,7 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
                 == proposalResults[0].hashCode()); // we need a shallow clone*/
 
         proposalResultsSorted.sort((pA: IProposalResult, pB: IProposalResult) => {
-            if (pB.score > pA.score) return 1;
-            else if (pB.score < pA.score) return -1;
-
-            return 0;
+            return parseInt(pB.score) - parseInt(pA.score);
         });
 
         // III. Attribute a rank to each Proposal
@@ -178,11 +175,7 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
                 score += "/";
             }
 
-            score += analysis.medianGrade
-                .toLocaleString("en-US", {
-                    minimumIntegerDigits: digitsForGrade,
-                })
-                .replace(", ", "");
+            score += analysis.medianGrade.toString().padStart(digitsForGrade, "0");
 
             if (!onlyNumbers) {
                 score += "_";
@@ -192,10 +185,8 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
                 amountOfJudges +
                 analysis.secondMedianGroupSize * BigInt(analysis.secondMedianGroupSign)
             )
-                .toLocaleString("en-US", {
-                    minimumIntegerDigits: <any>digitsForGroup,
-                })
-                .replace(", ", "");
+                .toString()
+                .padStart(digitsForGroup, "0");
 
             currentTally.moveJudgments(analysis.medianGrade, analysis.secondMedianGrade);
         }
