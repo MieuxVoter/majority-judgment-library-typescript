@@ -270,9 +270,9 @@ describe("MajorityJudgmentDeliberator", () => {
         expect(result.proposalResults[0].rank).toBe(2);
         expect(result.proposalResults[1].rank).toBe(1);
         expect(result.proposalResults[2].rank).toBe(3);
-        expect(result.proposalResults[3].analysis.medianGrade).toBe(2);
-        expect(result.proposalResults[4].analysis.medianGrade).toBe(2);
-        expect(result.proposalResults[4].analysis.medianGrade).toBe(1);
+        expect(result.proposalResults[0].analysis.medianGrade).toBe(2);
+        expect(result.proposalResults[1].analysis.medianGrade).toBe(2);
+        expect(result.proposalResults[2].analysis.medianGrade).toBe(1);
     });
 
     it("Test numeric score", () => {
