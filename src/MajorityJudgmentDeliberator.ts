@@ -33,7 +33,7 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
         favorContestation: boolean | undefined = undefined,
         numericScore: boolean | undefined = undefined
     ) {
-        this._favorContestation = favorContestation || true;
+        this._favorContestation = favorContestation === undefined ? true : favorContestation;
         this._numerizeScore = numericScore || false;
     }
 
