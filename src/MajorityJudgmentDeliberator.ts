@@ -73,7 +73,10 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
                 == proposalResults[0].hashCode()); // we need a shallow clone*/
 
         proposalResultsSorted.sort((pA: IProposalResult, pB: IProposalResult) => {
-            return parseInt(pB.score) - parseInt(pA.score);
+            if (pB.score > pA.score) return 1;
+            else if (pB.score < pA.score) return -1;
+
+            return 0;
         });
 
         // III. Attribute a rank to each Proposal
