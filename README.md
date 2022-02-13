@@ -13,17 +13,15 @@ This typescript package helps to resolve polls using [Majority Judgment](https:/
 
 -   Efficient Majority Judgment algorithm, scales well to billions of participants
 -   Configure whether to favor _adhesion_ or _contestation_ (default)
--   Balance proposal tallies using a static default grade or the median grade[^median_todo]
+-   Balance proposal tallies using a static default grade or the median grade
 -   Room for Central Judgment and Usual Judgment
 -   Unit-tested (run `typescript test`)
-
-[^median_todo]: TODO, see #1 ; it's a good first issue if you want to contribute
 
 ## Get started
 
 ```typescript
 
-import { MajorityJudgmentDeliberator, IDeliberator, ITally, Tally, ProposalTally, IResult } from "mj";
+import { MajorityJudgmentDeliberator, IDeliberator, ITally, Tally, ProposalTally, IResult } from "majority-judgment";
 
 const deliberator:IDeliberator = new MajorityJudgmentDeliberator();
 const tally:ITally = new Tally([
