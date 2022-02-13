@@ -206,7 +206,7 @@ describe("MajorityJudgmentDeliberator", () => {
 
     it("Test normalized tallies with thousands of (prime) proposals", () => {
         const amountOfProposals: number = primes.length; // 1437
-        const mj: IDeliberator = new MajorityJudgmentDeliberator();
+        const deliberator: IDeliberator = new MajorityJudgmentDeliberator();
         const tallies: IProposalTally[] = new Array(amountOfProposals);
         let prime: number;
 
@@ -216,7 +216,7 @@ describe("MajorityJudgmentDeliberator", () => {
         }
 
         const tally: ITally = new NormalizedTally(tallies);
-        const result: IResult = mj.deliberate(tally);
+        const result: IResult = deliberator.deliberate(tally);
 
         expect(result).toBeDefined();
         expect(result.proposalResults.length).toBe(amountOfProposals);

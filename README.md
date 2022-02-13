@@ -15,20 +15,19 @@ This typescript package helps to resolve polls using [Majority Judgment](https:/
 -   Configure whether to favor _adhesion_ or _contestation_ (default)
 -   Balance proposal tallies using a static default grade or the median grade
 -   Room for Central Judgment and Usual Judgment
--   Unit-tested (run `typescript test`)
+-   Unit-tested (run `npm run converage`)
 
 ## Get started
 
 ```typescript
-
-import { MajorityJudgmentDeliberator, IDeliberator, ITally, Tally, ProposalTally, IResult } from "majority-judgment";
+import { MajorityJudgmentDeliberator, IDeliberator, ITally, Tally, ProposalTally, IResult, NormalizedTally } from "majority-judgment";
 
 const deliberator:IDeliberator = new MajorityJudgmentDeliberator();
 const tally:ITally = new Tally([
-        // Amounts of judgments received for each grade, from "worst" grade to "best" grade
-        new ProposalTally([4n, 5n, 2n, 1n, 3n, 1n, 2n]),  // Proposal A
-        new ProposalTally([3n, 6n, 2n, 1n, 3n, 1n, 2n]),  // Proposal B
-        // …
+    // Amounts of judgments received for each grade, from "worst" grade to "best" grade
+    new ProposalTally([4n, 5n, 2n, 1n, 3n, 1n, 2n]),  // Proposal A
+    new ProposalTally([3n, 6n, 2n, 1n, 3n, 1n, 2n]),  // Proposal B
+    // …
 }, 18);
 
 const result:IResult = deliberator.deliberate(tally);
@@ -37,6 +36,15 @@ const result:IResult = deliberator.deliberate(tally);
 console.assert(2 == result.proposalResults.length);
 console.assert(2 == result.proposalResults[0].rank);  // Proposal A
 console.assert(1 == result.proposalResults[1].rank);  // Proposal B
+
+
+// sum of each tallies in ProposalTally must me equal
+// If not (late new candidate), you should use NormalizedTally instead of Tally
+
+const tally:ITally = new NormalizedTally([
+    new ProposalTally([4n, 5n, 2n, 1n, 3n, 1n, 2n]),  // Proposal A total tallies = 18
+    new ProposalTally([1n, 0n, 1n, 1n, 2n, 0n, 2n]),  // Proposal B total tallies = 7 (!= Proposal A)
+});
 ```
 
 ## Contribute
