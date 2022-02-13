@@ -29,7 +29,7 @@ export abstract class DefaultGradeTally extends Tally implements ITally {
             defaultGrade = this._getDefaultGradeForProposal(proposalTally);
             amountOfJudgments = proposalTally.amountOfJudgments;
             missingAmount = this.amountOfJudges - amountOfJudgments;
-            console.assert(missingAmount > 0); // ERROR: More judgments than judges!
+            console.assert(missingAmount > 0, "More judgments than judges!");
 
             if (missingAmount > 0) {
                 rawTally = proposalTally.tally;
