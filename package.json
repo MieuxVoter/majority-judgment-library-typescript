@@ -7,7 +7,7 @@
     "files": [
         "dist/*",
         "package.json",
-        "LICENSE.md",
+        "LICENSE",
         "README.md"
     ],
     "author": {
