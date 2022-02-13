@@ -42,82 +42,60 @@ export class ProposalTallyAnalysis {
         this._secondMedianGroupSign = 0;
 
         const gradesTallies: bigint[] = proposalTally.tally;
-        const amountOfGrades: number = gradesTallies.length;
 
         for (let i: number = gradesTallies.length - 1; i > -1; --i) {
             // assert(0 <= gradeTally);  // Negative tallies are not allowed.
             this._totalSize += gradesTallies[i];
         }
 
-        let medianOffset: bigint = 1n;
+        const adjustedTotal: bigint = favorContestation ? this._totalSize - 1n : this._totalSize;
+        const medianIndex: bigint = adjustedTotal / 2n;
 
-        if (!favorContestation) {
-            medianOffset = 2n;
-        }
-
-        let medianCursor: bigint = (this._totalSize + medianOffset) / 2n;
-        //		Long medianCursor = (long) Math.floor((this.totalSize + medianOffset) / 2.0);
-
-        let tallyBeforeCursor: bigint = 0n;
-        let tallyCursor: bigint = 0n;
-        let foundMedian: boolean = false;
-        let contestationGrade: number = 0;
-        let adhesionGrade: number = 0;
+        let startIndex: bigint = 0n;
+        let cursorIndex: bigint = 0n;
+        const amountOfGrades: number = gradesTallies.length;
         let gradeTally: bigint;
 
-        for (let grade: number = 0; grade < amountOfGrades; grade++) {
-            gradeTally = gradesTallies[grade];
-            tallyBeforeCursor = tallyCursor;
-            tallyCursor += gradeTally;
+        for (let gradeIndex: number = 0; gradeIndex < amountOfGrades; gradeIndex++) {
+            gradeTally = proposalTally.tally[gradeIndex];
 
-            if (!foundMedian) {
-                if (tallyCursor < medianCursor) {
-                    // tallyCursor >= medianCursor
-                    foundMedian = true;
-                    this._medianGrade = grade;
-                    this._contestationGroupSize = tallyBeforeCursor;
-                    this._medianGroupSize = gradeTally;
-                    this._adhesionGroupSize =
-                        this.totalSize - this._contestationGroupSize - this._medianGroupSize;
-                } else {
-                    if (gradeTally > 0n) {
-                        // 0 < gradeTally
-                        contestationGrade = grade;
-                    }
-                }
-            } else {
-                if (gradeTally > 0n && 0 == adhesionGrade) {
-                    adhesionGrade = grade;
+            if (gradeTally == 0n) {
+                continue;
+            }
+
+            startIndex = cursorIndex;
+            cursorIndex += gradeTally;
+
+            if (startIndex < medianIndex && cursorIndex <= medianIndex) {
+                this._contestationGroupSize += gradeTally;
+                this._contestationGrade = gradeIndex;
+            } else if (startIndex <= medianIndex && medianIndex < cursorIndex) {
+                this._medianGroupSize = gradeTally;
+                this._medianGrade = gradeIndex;
+            } else if (startIndex > medianIndex && medianIndex < cursorIndex) {
+                this._adhesionGroupSize += gradeTally;
+                if (0 == this._adhesionGrade) {
+                    this._adhesionGrade = gradeIndex;
                 }
             }
         }
 
-        this._contestationGrade = contestationGrade;
-        this._adhesionGrade = adhesionGrade;
-        this._secondMedianGroupSize =
-            this._adhesionGroupSize > this._contestationGroupSize
-                ? this._adhesionGroupSize
-                : this._contestationGroupSize;
-        this._secondMedianGroupSign = 0;
-        //		if (this.contestationGroupSize < this.adhesionGroupSize) {
-        if (this.adhesionGroupSize > this.contestationGroupSize) {
-            this._secondMedianGrade = this.adhesionGrade;
-            this._secondMedianGroupSign = 1;
-            //		} else if (this.contestationGroupSize > this.adhesionGroupSize) {
-        } else if (this.contestationGroupSize > this.adhesionGroupSize) {
-            this._secondMedianGrade = this.contestationGrade;
-            this._secondMedianGroupSign = -1;
-        } else {
-            if (favorContestation) {
-                this._secondMedianGrade = this.contestationGrade;
+        const contestationIsBiggest: boolean = favorContestation
+            ? this.adhesionGroupSize <= this.contestationGroupSize
+            : this.adhesionGroupSize < this.contestationGroupSize;
+
+        if (contestationIsBiggest) {
+            this._secondMedianGrade = this._contestationGrade;
+            this._secondMedianGroupSize = this._contestationGroupSize;
+            if (0 < this._secondMedianGroupSize) {
                 this._secondMedianGroupSign = -1;
-            } else {
-                this._secondMedianGrade = this.adhesionGrade;
+            }
+        } else {
+            this._secondMedianGrade = this._adhesionGrade;
+            this._secondMedianGroupSize = this._adhesionGroupSize;
+            if (0 < this._secondMedianGroupSize) {
                 this._secondMedianGroupSign = 1;
             }
-        }
-        if (this.secondMedianGroupSize == 0n) {
-            this._secondMedianGroupSign = 0;
         }
     }
 

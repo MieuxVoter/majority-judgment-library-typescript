@@ -33,7 +33,7 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
         favorContestation: boolean | undefined = undefined,
         numericScore: boolean | undefined = undefined
     ) {
-        this._favorContestation = favorContestation || true;
+        this._favorContestation = favorContestation === undefined ? true : favorContestation;
         this._numerizeScore = numericScore || false;
     }
 
@@ -178,11 +178,7 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
                 score += "/";
             }
 
-            score += analysis.medianGrade
-                .toLocaleString("en-US", {
-                    minimumIntegerDigits: digitsForGrade,
-                })
-                .replace(", ", "");
+            score += analysis.medianGrade.toString().padStart(digitsForGrade, "0");
 
             if (!onlyNumbers) {
                 score += "_";
@@ -192,10 +188,8 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
                 amountOfJudges +
                 analysis.secondMedianGroupSize * BigInt(analysis.secondMedianGroupSign)
             )
-                .toLocaleString("en-US", {
-                    minimumIntegerDigits: <any>digitsForGroup,
-                })
-                .replace(", ", "");
+                .toString()
+                .padStart(digitsForGroup, "0");
 
             currentTally.moveJudgments(analysis.medianGrade, analysis.secondMedianGrade);
         }
