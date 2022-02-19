@@ -63,14 +63,11 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
             score = this._computeScore(proposal, voterAmount);
             analysis = new ProposalAnalysis(proposal, this._favorContestation);
             proposalResult = new ProposalResult(analysis, score);
-            // proposalResult.setRank(???); // rank is computed below, AFTER the score pass
             proposalResults[proposalIndex] = proposalResult;
         }
 
         // II. Sort Proposals by score (lexicographical inverse)
         const proposalResultsSorted: ProposalResult[] = proposalResults.slice();
-        /*console.assert (proposalResultsSorted[0].hashCode()
-                == proposalResults[0].hashCode()); // we need a shallow clone*/
 
         proposalResultsSorted.sort((pA: IProposalResult, pB: IProposalResult) => {
             if (pB.score > pA.score) return 1;
