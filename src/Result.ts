@@ -1,5 +1,5 @@
 import { IResult } from "./IResult";
-import { IProposalResult } from "./ProposalResultInterface";
+import { IProposalResult } from "./IProposalResult";
 
 export class Result implements IResult {
     protected _proposalResults: IProposalResult[];

@@ -177,7 +177,7 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
                 score += "/";
             }
 
-            score += analysis.medianGrade.toString().padStart(digitsForGrade, "0");
+            score += analysis.medianMentionIndex.toString().padStart(digitsForGrade, "0");
 
             if (!onlyNumbers) {
                 score += "_";
@@ -190,7 +190,10 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
                 .toString()
                 .padStart(digitsForGroup, "0");
 
-            currentProposal.moveVotes(analysis.medianGrade, analysis.secondMedianGrade);
+            currentProposal.moveVotes(
+                analysis.medianMentionIndex,
+                analysis.secondMedianMentionIndex
+            );
         }
 
         return score;

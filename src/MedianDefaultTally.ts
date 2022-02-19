@@ -14,6 +14,6 @@ export class MedianDefaultTally extends DefaultGradeTally implements ITally {
     }
 
     protected override _getDefaultMentionIndexForProposal(proposal: IProposal): number {
-        return new ProposalAnalysis(proposal).medianGrade;
+        return new ProposalAnalysis(proposal).medianMentionIndex;
     }
 }

@@ -1,4 +1,4 @@
-import { IProposalResult } from "./ProposalResultInterface";
+import { IProposalResult } from "./IProposalResult";
 
 export interface IResult {
     /**

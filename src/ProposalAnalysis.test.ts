@@ -130,7 +130,7 @@ describe("ProposalTallyAnalysis", () => {
             const pta: ProposalAnalysis = new ProposalAnalysis(tally);
 
             it("Median Grade", () => {
-                expect(pta.medianGrade).toBe(test.medianGrade);
+                expect(pta.medianMentionIndex).toBe(test.medianGrade);
             });
 
             it("Median Group Size", () => {
@@ -138,7 +138,7 @@ describe("ProposalTallyAnalysis", () => {
             });
 
             it("Contestation Grade", () => {
-                expect(pta.contestationGrade).toBe(test.contestationGrade);
+                expect(pta.contestationMentionIndex).toBe(test.contestationGrade);
             });
 
             it("Contestation Group Size", () => {
@@ -146,7 +146,7 @@ describe("ProposalTallyAnalysis", () => {
             });
 
             it("Adhesion Grade", () => {
-                expect(pta.adhesionGrade).toBe(test.adhesionGrade);
+                expect(pta.adhesionMentionIndex).toBe(test.adhesionGrade);
             });
 
             it("Adhesion Group Size", () => {
@@ -154,7 +154,7 @@ describe("ProposalTallyAnalysis", () => {
             });
 
             it("Second Median Grade", () => {
-                expect(pta.secondMedianGrade).toBe(test.secondMedianGrade);
+                expect(pta.secondMedianMentionIndex).toBe(test.secondMedianGrade);
             });
 
             it("Second Median Group Size", () => {
