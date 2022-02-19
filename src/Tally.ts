@@ -8,16 +8,16 @@ export class Tally implements ITally {
     protected _proposals: IProposal[];
     protected _voterAmount: bigint;
 
-    public constructor(proposals: IProposal[], amountOfJudges: bigint | undefined = undefined) {
+    public constructor(proposals: IProposal[], voterAmount: bigint | undefined = undefined) {
         if (proposals.length == 0)
             throw new Error("Cannot obtain result if the proposals param is empty");
 
         this._proposals = proposals;
 
-        if (!amountOfJudges) {
-            this._guessAmountOfJudges();
+        if (!voterAmount) {
+            this._guessVoterAmount();
         } else {
-            this._voterAmount = amountOfJudges;
+            this._voterAmount = voterAmount;
         }
     }
 
@@ -37,7 +37,7 @@ export class Tally implements ITally {
         return this._voterAmount;
     }
 
-    protected _guessAmountOfJudges(): void {
+    protected _guessVoterAmount(): void {
         let voterAmount: bigint = 0n;
         let tmp: bigint;
 
