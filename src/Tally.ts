@@ -9,10 +9,9 @@ export class Tally implements ITally {
     protected _voterAmount: bigint;
 
     public constructor(proposals: IProposal[], amountOfJudges: bigint | undefined = undefined) {
-        console.assert(
-            proposals.length > 0,
-            "Cannot obtain result if the proposals param is empty"
-        );
+        if (proposals.length == 0)
+            throw new Error("Cannot obtain result if the proposals param is empty");
+
         this._proposals = proposals;
 
         if (!amountOfJudges) {

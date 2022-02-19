@@ -8,8 +8,8 @@ import { IProposal } from "./IProposal";
  * allows us to bypass the floating-point nightmare of the normalization of merit profiles, which is
  * one way to handle default grades on some polls.
  */
-export class ProposalTallyAnalysis {
-    protected _proposalTally: IProposal;
+export class ProposalAnalysis {
+    protected _proposal: IProposal;
     protected _totalSize: bigint = 0n; // amount of judges
     protected _medianGrade: number = 0;
     protected _medianGroupSize: bigint = 0n; // amount of judges in the median group
@@ -28,8 +28,8 @@ export class ProposalTallyAnalysis {
         if (proposalTally != undefined) this.update(proposalTally, favorContestation);
     }
 
-    public update(proposalTally: IProposal, favorContestation: boolean = true) {
-        this._proposalTally = proposalTally;
+    public update(proposal: IProposal, favorContestation: boolean = true) {
+        this._proposal = proposal;
         this._totalSize = 0n;
         this._medianGrade = 0;
         this._medianGroupSize = 0n;
@@ -41,7 +41,7 @@ export class ProposalTallyAnalysis {
         this._secondMedianGroupSize = 0n;
         this._secondMedianGroupSign = 0;
 
-        const gradesTallies: bigint[] = proposalTally.meritProfile;
+        const gradesTallies: bigint[] = proposal.meritProfile;
 
         for (let i: number = gradesTallies.length - 1; i > -1; --i) {
             // assert(0 <= gradeTally);  // Negative tallies are not allowed.
@@ -57,7 +57,7 @@ export class ProposalTallyAnalysis {
         let gradeTally: bigint;
 
         for (let gradeIndex: number = 0; gradeIndex < amountOfGrades; gradeIndex++) {
-            gradeTally = proposalTally.meritProfile[gradeIndex];
+            gradeTally = proposal.meritProfile[gradeIndex];
 
             if (gradeTally == 0n) {
                 continue;

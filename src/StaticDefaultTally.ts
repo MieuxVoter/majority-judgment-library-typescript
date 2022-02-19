@@ -17,10 +17,10 @@ export class StaticDefaultTally extends DefaultGradeTally implements ITally {
     public constructor(proposals: IProposal[], voterAmount: bigint, defaultMentionIndex: number) {
         super(proposals, voterAmount);
         this._defaultGrade = defaultMentionIndex;
-        this._fillWithDefaultGrade();
+        this._fillWithDefaultMention();
     }
 
-    protected override _getDefaultGradeForProposal(_: IProposal): number {
+    protected override _getDefaultMentionIndexForProposal(_: IProposal): number {
         return this._defaultGrade;
     }
 }

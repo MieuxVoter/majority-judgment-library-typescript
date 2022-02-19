@@ -1,7 +1,7 @@
 import { DefaultGradeTally } from "./DefaultGradeTally";
 import { IProposal } from "./IProposal";
 import { ITally } from "./ITally";
-import { ProposalTallyAnalysis } from "./ProposalTallyAnalysis";
+import { ProposalAnalysis } from "./ProposalAnalysis";
 
 /**
  * Fill the missing judgments into the median grade of each proposal. Useful when the proposals have
@@ -14,6 +14,6 @@ export class MedianDefaultTally extends DefaultGradeTally implements ITally {
     }
 
     protected override _getDefaultMentionIndexForProposal(proposal: IProposal): number {
-        return new ProposalTallyAnalysis(proposal).medianGrade;
+        return new ProposalAnalysis(proposal).medianGrade;
     }
 }

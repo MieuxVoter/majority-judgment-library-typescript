@@ -1,5 +1,5 @@
 import { Proposal } from "./Proposal";
-import { ProposalTallyAnalysis } from "./ProposalTallyAnalysis";
+import { ProposalAnalysis } from "./ProposalAnalysis";
 
 type Test = {
     name: string;
@@ -127,7 +127,7 @@ describe("ProposalTallyAnalysis", () => {
         const test: Test = allTests[i];
         describe(test.name, () => {
             const tally: Proposal = new Proposal(test.rawTally);
-            const pta: ProposalTallyAnalysis = new ProposalTallyAnalysis(tally);
+            const pta: ProposalAnalysis = new ProposalAnalysis(tally);
 
             it("Median Grade", () => {
                 expect(pta.medianGrade).toBe(test.medianGrade);
