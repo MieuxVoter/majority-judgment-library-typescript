@@ -1,5 +1,4 @@
 import { IProposalResult } from "./IProposalResult";
-import { IDeliberator } from "./IDeliberator";
 
 /**
  * The result return by a {@link IDeliberator}
