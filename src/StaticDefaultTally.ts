@@ -1,5 +1,5 @@
 import { DefaultGradeTally } from "./DefaultGradeTally";
-import { IProposalTally } from "./IProposalTally";
+import { IProposal } from "./IProposal";
 import { ITally } from "./ITally";
 
 export class StaticDefaultTally extends DefaultGradeTally implements ITally {
@@ -15,7 +15,7 @@ export class StaticDefaultTally extends DefaultGradeTally implements ITally {
     protected _defaultGrade: number = 0;
 
     public constructor(
-        proposalsTallies: IProposalTally[],
+        proposalsTallies: IProposal[],
         amountOfJudges: bigint,
         defaultGrade: number
     ) {
@@ -24,7 +24,7 @@ export class StaticDefaultTally extends DefaultGradeTally implements ITally {
         this._fillWithDefaultGrade();
     }
 
-    protected override _getDefaultGradeForProposal(_: IProposalTally): number {
+    protected override _getDefaultGradeForProposal(_: IProposal): number {
         return this._defaultGrade;
     }
 }

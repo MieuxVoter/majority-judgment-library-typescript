@@ -1,6 +1,6 @@
-import { IProposalTally } from "./IProposalTally";
+import { IProposal } from "./IProposal";
 import { ITally } from "./ITally";
-import { ProposalTally } from "./ProposalTally";
+import { Proposal } from "./Proposal";
 import { Tally } from "./Tally";
 import { lcm } from "./BigintTools";
 
@@ -14,12 +14,12 @@ import { lcm } from "./BigintTools";
  * and all the proposals received reasonably similar amounts of judgments.
  */
 export class NormalizedTally extends Tally implements ITally {
-    public constructor(proposalsTallies: IProposalTally[]) {
+    public constructor(proposalsTallies: IProposal[]) {
         super(proposalsTallies);
         this._initializeFromProposalsTallies(proposalsTallies);
     }
 
-    protected _initializeFromProposalsTallies(proposalsTallies: IProposalTally[]): void {
+    protected _initializeFromProposalsTallies(proposalsTallies: IProposal[]): void {
         const amountOfProposals: number = this.amountOfProposals;
         let amountOfJudges: bigint = 1n;
 
@@ -32,22 +32,22 @@ export class NormalizedTally extends Tally implements ITally {
         }
 
         // Normalize proposals to the LCM
-        let normalizedTallies: ProposalTally[] = new Array(amountOfProposals);
-        let proposalTally: IProposalTally;
-        let normalizedTally: ProposalTally;
+        let normalizedTallies: Proposal[] = new Array(amountOfProposals);
+        let proposalTally: IProposal;
+        let normalizedTally: Proposal;
         let factor: bigint;
         let amountOfGrades: number;
-        let gradesTallies: bigint[];
+        let meritProfile: bigint[];
 
         for (let i: number = 0; i < amountOfProposals; i++) {
             proposalTally = proposalsTallies[i];
-            normalizedTally = new ProposalTally(proposalTally.tally);
+            normalizedTally = new Proposal(proposalTally.meritProfile);
             factor = amountOfJudges / proposalTally.amountOfJudgments;
-            amountOfGrades = proposalTally.tally.length;
-            gradesTallies = normalizedTally.tally;
+            amountOfGrades = proposalTally.meritProfile.length;
+            meritProfile = normalizedTally.meritProfile;
 
             for (let j: number = 0; j < amountOfGrades; j++) {
-                gradesTallies[j] *= factor;
+                meritProfile[j] *= factor;
             }
 
             normalizedTallies[i] = normalizedTally;

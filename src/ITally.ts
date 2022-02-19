@@ -1,7 +1,7 @@
-import { IProposalTally } from "./IProposalTally";
+import { IProposal } from "./IProposal";
 
 export interface ITally {
-    get proposalsTallies(): IProposalTally[];
+    get proposalsTallies(): IProposal[];
     get amountOfJudges(): bigint;
     get amountOfProposals(): number;
 }

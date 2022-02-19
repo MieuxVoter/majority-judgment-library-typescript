@@ -1,4 +1,4 @@
-import { ProposalTally } from "./ProposalTally";
+import { Proposal } from "./Proposal";
 import { ProposalTallyAnalysis } from "./ProposalTallyAnalysis";
 
 type Test = {
@@ -126,7 +126,7 @@ describe("ProposalTallyAnalysis", () => {
     for (let i: number = allTests.length - 1; i > -1; --i) {
         const test: Test = allTests[i];
         describe(test.name, () => {
-            const tally: ProposalTally = new ProposalTally(test.rawTally);
+            const tally: Proposal = new Proposal(test.rawTally);
             const pta: ProposalTallyAnalysis = new ProposalTallyAnalysis(tally);
 
             it("Median Grade", () => {

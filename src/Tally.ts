@@ -1,15 +1,15 @@
-import { IProposalTally } from "./IProposalTally";
+import { IProposal } from "./IProposal";
 import { ITally } from "./ITally";
 
 /**
  * A Basic implementation of a TallyInterface that reads from an array of ProposalTallyInterface.
  */
 export class Tally implements ITally {
-    protected _proposalsTallies: IProposalTally[];
+    protected _proposalsTallies: IProposal[];
     protected _amountOfJudges: bigint;
 
     public constructor(
-        proposalsTallies: IProposalTally[],
+        proposalsTallies: IProposal[],
         amountOfJudges: bigint | undefined = undefined
     ) {
         this._proposalsTallies = proposalsTallies;
@@ -21,7 +21,7 @@ export class Tally implements ITally {
         }
     }
 
-    public get proposalsTallies(): IProposalTally[] {
+    public get proposalsTallies(): IProposal[] {
         return this._proposalsTallies;
     }
 

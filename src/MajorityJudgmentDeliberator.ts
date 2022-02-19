@@ -1,6 +1,6 @@
 import { IDeliberator } from "./IDeliberator";
 import { IncoherentTallyError } from "./IncoherentTallyError";
-import { IProposalTally } from "./IProposalTally";
+import { IProposal } from "./IProposal";
 import { IResult } from "./IResult";
 import { ITally } from "./ITally";
 import { ProposalResult } from "./ProposalResult";
@@ -47,12 +47,12 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
     public deliberate(tally: ITally): IResult {
         this._checkTally(tally);
 
-        const tallies: IProposalTally[] = tally.proposalsTallies;
+        const tallies: IProposal[] = tally.proposalsTallies;
         const amountOfJudges: bigint = tally.amountOfJudges;
         const amountOfProposals: number = tally.amountOfProposals;
         const proposalResults: ProposalResult[] = [];
 
-        let proposalTally: IProposalTally;
+        let proposalTally: IProposal;
         let score: string;
         let proposalResult: ProposalResult;
         let analysis: ProposalTallyAnalysis;
@@ -118,11 +118,11 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
     }
 
     protected _isTallyCoherent(tally: ITally): boolean {
-        const proposalsTallies: IProposalTally[] = tally.proposalsTallies;
+        const proposalsTallies: IProposal[] = tally.proposalsTallies;
         let innerTally: bigint[];
 
         for (let i: number = proposalsTallies.length - 1; i > -1; --i) {
-            innerTally = proposalsTallies[i].tally;
+            innerTally = proposalsTallies[i].meritProfile;
 
             for (let j: number = innerTally.length - 1; j > -1; --j) {
                 if (innerTally[j] < 0n) return false;
@@ -133,7 +133,7 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
     }
 
     protected _isTallyBalanced(tally: ITally): boolean {
-        const proposalsTallies: IProposalTally[] = tally.proposalsTallies;
+        const proposalsTallies: IProposal[] = tally.proposalsTallies;
         let amountOfJudges: bigint =
             proposalsTallies[proposalsTallies.length - 1].amountOfJudgments;
 
@@ -154,7 +154,7 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
      * @return the score of the proposal
      */
     protected _computeScore(
-        proposalTally: IProposalTally,
+        proposalTally: IProposal,
         amountOfJudges: bigint,
         favorContestation: boolean | undefined = undefined,
         onlyNumbers: boolean | undefined = undefined
@@ -163,11 +163,11 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
         onlyNumbers = onlyNumbers || this._numerizeScore;
 
         let analysis: ProposalTallyAnalysis = new ProposalTallyAnalysis();
-        let amountOfGrades: number = proposalTally.tally.length;
+        let amountOfGrades: number = proposalTally.meritProfile.length;
         let digitsForGrade: number = this._countDigits(amountOfGrades);
         let digitsForGroup: number = this._countDigits(amountOfJudges) + 1;
 
-        let currentTally: IProposalTally = proposalTally.clone();
+        let currentTally: IProposal = proposalTally.clone();
 
         let score: string = "";
 

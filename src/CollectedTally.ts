@@ -1,11 +1,11 @@
 import { ITally } from "./ITally";
-import { ProposalTally } from "./ProposalTally";
+import { Proposal } from "./Proposal";
 
 export class CollectedTally implements ITally {
     private _amountOfProposals: number = 0;
     private _amountOfGrades: number = 0;
 
-    private _proposalsTallies: ProposalTally[] = [];
+    private _proposalsTallies: Proposal[] = [];
 
     public constructor(amountOfProposals: number, amountOfGrades: number) {
         this._amountOfProposals = amountOfProposals;
@@ -17,11 +17,11 @@ export class CollectedTally implements ITally {
 
             for (let j: number = 0; j < amountOfGrades; j++) tally.push(0n);
 
-            this._proposalsTallies.push(new ProposalTally(tally));
+            this._proposalsTallies.push(new Proposal(tally));
         }
     }
 
-    public get proposalsTallies(): ProposalTally[] {
+    public get proposalsTallies(): Proposal[] {
         return this._proposalsTallies;
     }
 
@@ -57,7 +57,7 @@ export class CollectedTally implements ITally {
         console.assert(0 <= grade);
         console.assert(this._amountOfGrades > grade);
 
-        const tally: bigint[] = this.proposalsTallies[proposal].tally;
+        const tally: bigint[] = this.proposalsTallies[proposal].meritProfile;
         tally[grade] = tally[grade] + 1n;
     }
 }

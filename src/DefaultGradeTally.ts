@@ -1,4 +1,4 @@
-import { IProposalTally } from "./IProposalTally";
+import { IProposal } from "./IProposal";
 import { ITally } from "./ITally";
 import { Tally } from "./Tally";
 
@@ -8,17 +8,17 @@ import { Tally } from "./Tally";
  */
 export abstract class DefaultGradeTally extends Tally implements ITally {
     /** Override this to choose the default grade for a given proposal. */
-    protected abstract _getDefaultGradeForProposal(proposalTally: IProposalTally): number;
+    protected abstract _getDefaultGradeForProposal(proposalTally: IProposal): number;
 
     // <domi41> /me is confused with why we need constructors in an abstract class?
-    public constructor(proposalsTallies: IProposalTally[], amountOfJudges: bigint) {
+    public constructor(proposalsTallies: IProposal[], amountOfJudges: bigint) {
         super(proposalsTallies, amountOfJudges);
     }
 
     protected _fillWithDefaultGrade(): void {
         const amountOfProposals: number = this.amountOfProposals;
         const proposalsTallies = this.proposalsTallies;
-        let proposalTally: IProposalTally;
+        let proposalTally: IProposal;
         let defaultGrade: number;
         let amountOfJudgments: bigint;
         let missingAmount: bigint;
@@ -32,7 +32,7 @@ export abstract class DefaultGradeTally extends Tally implements ITally {
             console.assert(missingAmount > 0, "More judgments than judges!");
 
             if (missingAmount > 0) {
-                rawTally = proposalTally.tally;
+                rawTally = proposalTally.meritProfile;
                 rawTally[defaultGrade] = rawTally[defaultGrade] + missingAmount;
             }
         }

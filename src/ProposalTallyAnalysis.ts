@@ -1,4 +1,4 @@
-import { IProposalTally } from "./IProposalTally";
+import { IProposal } from "./IProposal";
 
 /**
  * Collect useful data on a proposal tally. Does NOT compute the rank, but provides all we need.
@@ -9,7 +9,7 @@ import { IProposalTally } from "./IProposalTally";
  * one way to handle default grades on some polls.
  */
 export class ProposalTallyAnalysis {
-    protected _proposalTally: IProposalTally;
+    protected _proposalTally: IProposal;
     protected _totalSize: bigint = 0n; // amount of judges
     protected _medianGrade: number = 0;
     protected _medianGroupSize: bigint = 0n; // amount of judges in the median group
@@ -22,13 +22,13 @@ export class ProposalTallyAnalysis {
     protected _secondMedianGroupSign: number = 0; // -1 for contestation, +1 for adhesion, 0 for empty group size
 
     public constructor(
-        proposalTally: IProposalTally | undefined = undefined,
+        proposalTally: IProposal | undefined = undefined,
         favorContestation: boolean = true
     ) {
         if (proposalTally != undefined) this.update(proposalTally, favorContestation);
     }
 
-    public update(proposalTally: IProposalTally, favorContestation: boolean = true) {
+    public update(proposalTally: IProposal, favorContestation: boolean = true) {
         this._proposalTally = proposalTally;
         this._totalSize = 0n;
         this._medianGrade = 0;
@@ -41,7 +41,7 @@ export class ProposalTallyAnalysis {
         this._secondMedianGroupSize = 0n;
         this._secondMedianGroupSign = 0;
 
-        const gradesTallies: bigint[] = proposalTally.tally;
+        const gradesTallies: bigint[] = proposalTally.meritProfile;
 
         for (let i: number = gradesTallies.length - 1; i > -1; --i) {
             // assert(0 <= gradeTally);  // Negative tallies are not allowed.
@@ -57,7 +57,7 @@ export class ProposalTallyAnalysis {
         let gradeTally: bigint;
 
         for (let gradeIndex: number = 0; gradeIndex < amountOfGrades; gradeIndex++) {
-            gradeTally = proposalTally.tally[gradeIndex];
+            gradeTally = proposalTally.meritProfile[gradeIndex];
 
             if (gradeTally == 0n) {
                 continue;
