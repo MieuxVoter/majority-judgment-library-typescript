@@ -1,11 +1,15 @@
-import { IProposalResult } from "./ProposalResultInterface";
+import { IProposalResult } from "./IProposalResult";
+import { IDeliberator } from "./IDeliberator";
 
+/**
+ * The result return by a {@link IDeliberator}
+ */
 export interface IResult {
     /**
-     * ProposalResults are not ordered by rank, they are in the order the proposals' tallies were
+     * {@link IProposalResult} are not ordered by rank, they are in the order the proposals' tallies were
      * submitted.
      *
-     * @return an array of `ProposalResult`, in the order the `ProposalTally`s were submitted.
+     * @return an array of {@link IProposalResult}, in the order the {@link IProposal} were submitted.
      */
     get proposalResults(): IProposalResult[];
 }

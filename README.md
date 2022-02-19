@@ -19,32 +19,93 @@ This typescript package helps to resolve polls using [Majority Judgment](https:/
 
 ## Get started
 
+### Random sample
+
 ```typescript
-import { MajorityJudgmentDeliberator, IDeliberator, ITally, Tally, ProposalTally, IResult, NormalizedTally } from "majority-judgment";
+import {
+    TallyCollector,
+    MajorityJudgmentDeliberator,
+    IDeliberator,
+    IResult,
+} from "majority-judgment";
 
-const deliberator:IDeliberator = new MajorityJudgmentDeliberator();
-const tally:ITally = new Tally([
-    // Amounts of judgments received for each grade, from "worst" grade to "best" grade
-    new ProposalTally([4n, 5n, 2n, 1n, 3n, 1n, 2n]),  // Proposal A
-    new ProposalTally([3n, 6n, 2n, 1n, 3n, 1n, 2n]),  // Proposal B
-    // …
-}, 18);
+const proposalAmount: number = 5;
+const mentionAmount: number = 7;
+const voterAmount: number = 1000;
+const tally: TallyCollector = new TallyCollector(proposalAmount, mentionAmount);
+fillTallyCollectorWithRandomVote(tally, voterAmount);
 
-const result:IResult = deliberator.deliberate(tally);
+const deliberator: IDeliberator = new MajorityJudgmentDeliberator();
+const result: IResult = deliberator.deliberate(tally);
 
-// Each proposal result has a rank, and results are returned by input order
-console.assert(2 == result.proposalResults.length);
-console.assert(2 == result.proposalResults[0].rank);  // Proposal A
-console.assert(1 == result.proposalResults[1].rank);  // Proposal B
+for (let i: number = 0; i < proposalAmount; i++)
+    console.log(
+        `Proposal at index ${i} obtains the rank ${result.proposalResults[i].rank} with the majority mention at index ${result.proposalResults[i].analysis.medianMentionIndex}`
+    );
 
+function fillTallyCollectorWithRandomVote(tally: TallyCollector, voterAmount: number): void {
+    const applyRandomVoteForEachProposal = () => {
+        let randomProposalIndex: number;
+        let randomMentionIndex: number;
 
-// sum of each tallies in ProposalTally must me equal
-// If not (late new candidate), you should use NormalizedTally instead of Tally
+        for (let i: number = 0; i < proposalAmount; i++) {
+            randomProposalIndex = Math.floor(Math.random() * proposalAmount);
+            randomMentionIndex = Math.floor(Math.random() * mentionAmount);
+            tally.collect(randomProposalIndex, randomMentionIndex);
+        }
+    };
 
-const tally:ITally = new NormalizedTally([
-    new ProposalTally([4n, 5n, 2n, 1n, 3n, 1n, 2n]),  // Proposal A total tallies = 18
-    new ProposalTally([1n, 0n, 1n, 1n, 2n, 0n, 2n]),  // Proposal B total tallies = 7 (!= Proposal A)
-});
+    for (let i: number = 0; i < voterAmount; i++) applyRandomVoteForEachProposal();
+}
+```
+
+### Knewn datas
+
+```typescript
+import {
+    MajorityJudgmentDeliberator,
+    IDeliberator,
+    IResult,
+    ITally,
+    Tally,
+    Proposal,
+} from "majority-judgment";
+
+const meritProfilSample: bigint[] = [4n, 0n, 2n, 1n];
+// index 0 = worst mention, 4 vote
+// max index (3) = best mention, 1 vote
+
+const tally: ITally = new Tally([
+    new Proposal(meritProfilSample),
+    new Proposal([2n, 1n, 0n, 4n]),
+    new Proposal([3n, 2n, 1n, 1n]),
+]);
+
+const deliberator: IDeliberator = new MajorityJudgmentDeliberator();
+const result: IResult = deliberator.deliberate(tally);
+const proposalAmount: number = tally.proposalAmount;
+
+for (let i: number = 0; i < proposalAmount; i++)
+    console.log(
+        `Proposal at index ${i} obtains the rank ${result.proposalResults[i].rank} with the majority mention at index ${result.proposalResults[i].analysis.medianMentionIndex}`
+    );
+
+// Note: the sum vote in proposal must be equal. If not, the deliberator will throw an error.
+```
+
+### Prevent error when vote amount is not the same for each proposal
+
+```typescript
+import { ITally, Proposal, NormalizedTally } from ".";
+
+// If the sum vote in proposal are not equal. You can use NormalizedTally.
+const tally: ITally = new NormalizedTally([
+    new Proposal([4n, 0n, 2n, 10n]),
+    new Proposal([20n, 10n, 0n, 4n]),
+    new Proposal([3n, 200n, 100n, 1n]),
+]);
+
+// (...) Same logic
 ```
 
 ## Contribute

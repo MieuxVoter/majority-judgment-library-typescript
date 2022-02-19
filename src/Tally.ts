@@ -1,48 +1,52 @@
-import { IProposalTally } from "./IProposalTally";
+import { IProposal } from "./IProposal";
 import { ITally } from "./ITally";
 
 /**
- * A Basic implementation of a TallyInterface that reads from an array of ProposalTallyInterface.
+ * A Basic implementation of a {@link ITally} that reads from an array of {@link IProposal}.
  */
 export class Tally implements ITally {
-    protected _proposalsTallies: IProposalTally[];
-    protected _amountOfJudges: bigint;
+    protected _proposals: IProposal[];
+    protected _voterAmount: bigint;
 
-    public constructor(
-        proposalsTallies: IProposalTally[],
-        amountOfJudges: bigint | undefined = undefined
-    ) {
-        this._proposalsTallies = proposalsTallies;
+    public constructor(proposals: IProposal[], voterAmount: bigint | undefined = undefined) {
+        if (proposals.length == 0)
+            throw new Error("Cannot obtain result if the proposals param is empty");
 
-        if (!amountOfJudges) {
-            this._guessAmountOfJudges();
+        this._proposals = proposals;
+
+        if (!voterAmount) {
+            this._guessVoterAmount();
         } else {
-            this._amountOfJudges = amountOfJudges;
+            this._voterAmount = voterAmount;
         }
     }
 
-    public get proposalsTallies(): IProposalTally[] {
-        return this._proposalsTallies;
+    public get mentionAmount(): number {
+        return this._proposals[0].mentionAmount;
     }
 
-    public get amountOfProposals(): number {
-        return this._proposalsTallies.length;
+    public get proposals(): IProposal[] {
+        return this._proposals;
     }
 
-    public get amountOfJudges(): bigint {
-        return this._amountOfJudges;
+    public get proposalAmount(): number {
+        return this._proposals.length;
     }
 
-    protected _guessAmountOfJudges(): void {
-        let amountOfJudges: bigint = 0n;
+    public get voterAmount(): bigint {
+        return this._voterAmount;
+    }
+
+    protected _guessVoterAmount(): void {
+        let voterAmount: bigint = 0n;
         let tmp: bigint;
 
-        for (let i: number = this._proposalsTallies.length - 1; i > -1; --i) {
-            tmp = this._proposalsTallies[i].amountOfJudgments;
+        for (let i: number = this._proposals.length - 1; i > -1; --i) {
+            tmp = this._proposals[i].voteAmount;
 
-            if (tmp > amountOfJudges) amountOfJudges = tmp;
+            if (tmp > voterAmount) voterAmount = tmp;
         }
 
-        this._amountOfJudges = amountOfJudges;
+        this._voterAmount = voterAmount;
     }
 }

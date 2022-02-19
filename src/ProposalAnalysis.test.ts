@@ -1,9 +1,9 @@
-import { ProposalTally } from "./ProposalTally";
-import { ProposalTallyAnalysis } from "./ProposalTallyAnalysis";
+import { Proposal } from "./Proposal";
+import { ProposalAnalysis } from "./ProposalAnalysis";
 
 type Test = {
     name: string;
-    rawTally: bigint[];
+    meritProfile: bigint[];
     medianGrade: number;
     medianGroupSize: bigint;
     contestationGrade: number;
@@ -18,7 +18,7 @@ type Test = {
 const allTests: Test[] = [
     {
         name: "Very empty tallies yield zeroes",
-        rawTally: [0n],
+        meritProfile: [0n],
         medianGrade: 0,
         medianGroupSize: 0n,
         contestationGrade: 0,
@@ -31,7 +31,7 @@ const allTests: Test[] = [
     },
     {
         name: "Empty tallies yield zeroes",
-        rawTally: [0n, 0n, 0n, 0n],
+        meritProfile: [0n, 0n, 0n, 0n],
         medianGrade: 0,
         medianGroupSize: 0n,
         contestationGrade: 0,
@@ -44,7 +44,7 @@ const allTests: Test[] = [
     },
     {
         name: "Absurd tally of 1 Grade",
-        rawTally: [7n],
+        meritProfile: [7n],
         medianGrade: 0,
         medianGroupSize: 7n,
         contestationGrade: 0,
@@ -57,7 +57,7 @@ const allTests: Test[] = [
     },
     {
         name: "Approbation",
-        rawTally: [31n, 72n],
+        meritProfile: [31n, 72n],
         medianGrade: 1,
         medianGroupSize: 72n,
         contestationGrade: 0,
@@ -70,7 +70,7 @@ const allTests: Test[] = [
     },
     {
         name: "Equality favors contestation",
-        rawTally: [42n, 42n],
+        meritProfile: [42n, 42n],
         medianGrade: 0,
         medianGroupSize: 42n,
         contestationGrade: 0,
@@ -83,7 +83,7 @@ const allTests: Test[] = [
     },
     {
         name: "Example with seven grades",
-        rawTally: [4n, 2n, 0n, 1n, 2n, 2n, 3n],
+        meritProfile: [4n, 2n, 0n, 1n, 2n, 2n, 3n],
         medianGrade: 3,
         medianGroupSize: 1n,
         contestationGrade: 1,
@@ -96,7 +96,7 @@ const allTests: Test[] = [
     },
     {
         name: "Works even if multiple grades are at zero",
-        rawTally: [4n, 0n, 0n, 1n, 0n, 0n, 4n],
+        meritProfile: [4n, 0n, 0n, 1n, 0n, 0n, 4n],
         medianGrade: 3,
         medianGroupSize: 1n,
         contestationGrade: 0,
@@ -109,7 +109,7 @@ const allTests: Test[] = [
     },
     {
         name: "Weird tally",
-        rawTally: [1n, 1n, 1n, 1n, 1n, 1n, 1n],
+        meritProfile: [1n, 1n, 1n, 1n, 1n, 1n, 1n],
         medianGrade: 3,
         medianGroupSize: 1n,
         contestationGrade: 2,
@@ -126,11 +126,11 @@ describe("ProposalTallyAnalysis", () => {
     for (let i: number = allTests.length - 1; i > -1; --i) {
         const test: Test = allTests[i];
         describe(test.name, () => {
-            const tally: ProposalTally = new ProposalTally(test.rawTally);
-            const pta: ProposalTallyAnalysis = new ProposalTallyAnalysis(tally);
+            const tally: Proposal = new Proposal(test.meritProfile);
+            const pta: ProposalAnalysis = new ProposalAnalysis(tally);
 
             it("Median Grade", () => {
-                expect(pta.medianGrade).toBe(test.medianGrade);
+                expect(pta.medianMentionIndex).toBe(test.medianGrade);
             });
 
             it("Median Group Size", () => {
@@ -138,7 +138,7 @@ describe("ProposalTallyAnalysis", () => {
             });
 
             it("Contestation Grade", () => {
-                expect(pta.contestationGrade).toBe(test.contestationGrade);
+                expect(pta.contestationMentionIndex).toBe(test.contestationGrade);
             });
 
             it("Contestation Group Size", () => {
@@ -146,7 +146,7 @@ describe("ProposalTallyAnalysis", () => {
             });
 
             it("Adhesion Grade", () => {
-                expect(pta.adhesionGrade).toBe(test.adhesionGrade);
+                expect(pta.adhesionMentionIndex).toBe(test.adhesionGrade);
             });
 
             it("Adhesion Group Size", () => {
@@ -154,7 +154,7 @@ describe("ProposalTallyAnalysis", () => {
             });
 
             it("Second Median Grade", () => {
-                expect(pta.secondMedianGrade).toBe(test.secondMedianGrade);
+                expect(pta.secondMedianMentionIndex).toBe(test.secondMedianGrade);
             });
 
             it("Second Median Group Size", () => {

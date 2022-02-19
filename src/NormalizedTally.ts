@@ -1,59 +1,59 @@
-import { IProposalTally } from "./IProposalTally";
+import { IProposal } from "./IProposal";
 import { ITally } from "./ITally";
-import { ProposalTally } from "./ProposalTally";
+import { Proposal } from "./Proposal";
 import { Tally } from "./Tally";
 import { lcm } from "./BigintTools";
 
 /**
- * The deliberator expects the proposals' tallies to hold the same amount of judgments. This
- * NormalizedTally accepts tallies with disparate amounts of judgments per proposal, and normalizes
+ * The deliberator expects the proposals' tallies to hold the same amount of vote. This
+ * NormalizedTally accepts proposals with disparate amounts of vote per proposal, and normalizes
  * them to their least common multiple, which amounts to using percentages, except we don't use
  * floating-point arithmetic.
  *
- * <p>This is useful when there are too many proposals for judges to be expected to judge them all,
- * and all the proposals received reasonably similar amounts of judgments.
+ * <p>This is useful when there are too many proposals for voter to be expected to vote them all,
+ * and all the proposals received reasonably similar amounts of votes.
  */
 export class NormalizedTally extends Tally implements ITally {
-    public constructor(proposalsTallies: IProposalTally[]) {
-        super(proposalsTallies);
-        this._initializeFromProposalsTallies(proposalsTallies);
+    public constructor(proposals: IProposal[]) {
+        super(proposals);
+        this._initializeFromProposalsTallies(proposals);
     }
 
-    protected _initializeFromProposalsTallies(proposalsTallies: IProposalTally[]): void {
-        const amountOfProposals: number = this.amountOfProposals;
-        let amountOfJudges: bigint = 1n;
+    protected _initializeFromProposalsTallies(proposals: IProposal[]): void {
+        const proposalAmount: number = this.proposalAmount;
+        let voterAmount: bigint = 1n;
 
-        for (let i: number = proposalsTallies.length - 1; i > -1; --i) {
-            amountOfJudges = lcm(amountOfJudges, proposalsTallies[i].amountOfJudgments);
+        for (let i: number = proposals.length - 1; i > -1; --i) {
+            voterAmount = lcm(voterAmount, proposals[i].voteAmount);
         }
 
-        if (amountOfJudges == 0n) {
-            throw new Error("Cannot normalize: one or more proposals have no judgments.");
+        if (voterAmount == 0n) {
+            throw new Error("Cannot normalize: one or more proposals have no vote.");
         }
 
         // Normalize proposals to the LCM
-        let normalizedTallies: ProposalTally[] = new Array(amountOfProposals);
-        let proposalTally: IProposalTally;
-        let normalizedTally: ProposalTally;
+        let normalizedTallies: Proposal[] = new Array(proposalAmount);
+        let proposal: IProposal;
+        let normalizedProposal: Proposal;
         let factor: bigint;
-        let amountOfGrades: number;
-        let gradesTallies: bigint[];
+        let mentionAmount: number;
+        let meritProfile: bigint[];
 
-        for (let i: number = 0; i < amountOfProposals; i++) {
-            proposalTally = proposalsTallies[i];
-            normalizedTally = new ProposalTally(proposalTally.tally);
-            factor = amountOfJudges / proposalTally.amountOfJudgments;
-            amountOfGrades = proposalTally.tally.length;
-            gradesTallies = normalizedTally.tally;
+        for (let i: number = 0; i < proposalAmount; i++) {
+            proposal = proposals[i];
+            normalizedProposal = new Proposal(proposal.meritProfile);
+            factor = voterAmount / proposal.voteAmount;
+            mentionAmount = proposal.meritProfile.length;
+            meritProfile = normalizedProposal.meritProfile;
 
-            for (let j: number = 0; j < amountOfGrades; j++) {
-                gradesTallies[j] *= factor;
+            for (let j: number = 0; j < mentionAmount; j++) {
+                meritProfile[j] *= factor;
             }
 
-            normalizedTallies[i] = normalizedTally;
+            normalizedTallies[i] = normalizedProposal;
         }
 
-        this._proposalsTallies = normalizedTallies;
-        this._amountOfJudges = amountOfJudges;
+        this._proposals = normalizedTallies;
+        this._voterAmount = voterAmount;
     }
 }

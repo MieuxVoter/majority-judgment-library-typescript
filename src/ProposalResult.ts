@@ -1,15 +1,20 @@
-import { IProposalResult } from "./ProposalResultInterface";
-import { ProposalTallyAnalysis } from "./ProposalTallyAnalysis";
+import { IProposal } from "./IProposal";
+import { IProposalResult } from "./IProposalResult";
+import { ProposalAnalysis } from "./ProposalAnalysis";
 
 export class ProposalResult implements IProposalResult {
     protected _rank: number;
     protected _score: string;
-    protected _analysis: ProposalTallyAnalysis;
+    protected _analysis: ProposalAnalysis;
 
-    public constructor(analysis: ProposalTallyAnalysis, score: string, rank: number = 0) {
+    public constructor(analysis: ProposalAnalysis, score: string, rank: number = 0) {
         this._analysis = analysis;
         this._score = score;
         this._rank = rank;
+    }
+
+    get proposal(): IProposal {
+        return this._analysis.proposal;
     }
 
     public get rank(): number {
@@ -24,7 +29,7 @@ export class ProposalResult implements IProposalResult {
         return this._score;
     }
 
-    public get analysis(): ProposalTallyAnalysis {
+    public get analysis(): ProposalAnalysis {
         return this._analysis;
     }
 }

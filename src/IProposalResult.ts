@@ -1,4 +1,5 @@
-import { ProposalTallyAnalysis } from "./ProposalTallyAnalysis";
+import { IProposal } from "./IProposal";
+import { ProposalAnalysis } from "./ProposalAnalysis";
 
 export interface IProposalResult {
     /**
@@ -16,5 +17,7 @@ export interface IProposalResult {
     get score(): string;
 
     /** Get more data about the proposal tally, such as the median grade. */
-    get analysis(): ProposalTallyAnalysis;
+    get analysis(): ProposalAnalysis;
+
+    get proposal(): IProposal;
 }

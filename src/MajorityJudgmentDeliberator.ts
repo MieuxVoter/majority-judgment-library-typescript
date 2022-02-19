@@ -1,11 +1,11 @@
 import { IDeliberator } from "./IDeliberator";
 import { IncoherentTallyError } from "./IncoherentTallyError";
-import { IProposalTally } from "./IProposalTally";
+import { IProposal } from "./IProposal";
 import { IResult } from "./IResult";
 import { ITally } from "./ITally";
 import { ProposalResult } from "./ProposalResult";
-import { IProposalResult } from "./ProposalResultInterface";
-import { ProposalTallyAnalysis } from "./ProposalTallyAnalysis";
+import { IProposalResult } from "./IProposalResult";
+import { ProposalAnalysis } from "./ProposalAnalysis";
 import { Result } from "./Result";
 import { UnbalancedTallyError } from "./UnbalancedTallyError";
 
@@ -47,30 +47,27 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
     public deliberate(tally: ITally): IResult {
         this._checkTally(tally);
 
-        const tallies: IProposalTally[] = tally.proposalsTallies;
-        const amountOfJudges: bigint = tally.amountOfJudges;
-        const amountOfProposals: number = tally.amountOfProposals;
+        const proposals: IProposal[] = tally.proposals;
+        const voterAmount: bigint = tally.voterAmount;
+        const proposalAmount: number = tally.proposalAmount;
         const proposalResults: ProposalResult[] = [];
 
-        let proposalTally: IProposalTally;
+        let proposal: IProposal;
         let score: string;
         let proposalResult: ProposalResult;
-        let analysis: ProposalTallyAnalysis;
+        let analysis: ProposalAnalysis;
 
         // I. Compute the scores of each Proposal
-        for (let proposalIndex: number = 0; proposalIndex < amountOfProposals; proposalIndex++) {
-            proposalTally = tallies[proposalIndex];
-            score = this._computeScore(proposalTally, amountOfJudges);
-            analysis = new ProposalTallyAnalysis(proposalTally, this._favorContestation);
+        for (let proposalIndex: number = 0; proposalIndex < proposalAmount; proposalIndex++) {
+            proposal = proposals[proposalIndex];
+            score = this._computeScore(proposal, voterAmount);
+            analysis = new ProposalAnalysis(proposal, this._favorContestation);
             proposalResult = new ProposalResult(analysis, score);
-            // proposalResult.setRank(???); // rank is computed below, AFTER the score pass
             proposalResults[proposalIndex] = proposalResult;
         }
 
         // II. Sort Proposals by score (lexicographical inverse)
         const proposalResultsSorted: ProposalResult[] = proposalResults.slice();
-        /*console.assert (proposalResultsSorted[0].hashCode()
-                == proposalResults[0].hashCode()); // we need a shallow clone*/
 
         proposalResultsSorted.sort((pA: IProposalResult, pB: IProposalResult) => {
             if (pB.score > pA.score) return 1;
@@ -84,7 +81,7 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
         let actualRank: number;
         let proposalResultBefore: ProposalResult;
 
-        for (let proposalIndex: number = 0; proposalIndex < amountOfProposals; ++proposalIndex) {
+        for (let proposalIndex: number = 0; proposalIndex < proposalAmount; ++proposalIndex) {
             proposalResult = proposalResultsSorted[proposalIndex];
             actualRank = rank;
 
@@ -118,11 +115,11 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
     }
 
     protected _isTallyCoherent(tally: ITally): boolean {
-        const proposalsTallies: IProposalTally[] = tally.proposalsTallies;
+        const proposals: IProposal[] = tally.proposals;
         let innerTally: bigint[];
 
-        for (let i: number = proposalsTallies.length - 1; i > -1; --i) {
-            innerTally = proposalsTallies[i].tally;
+        for (let i: number = proposals.length - 1; i > -1; --i) {
+            innerTally = proposals[i].meritProfile;
 
             for (let j: number = innerTally.length - 1; j > -1; --j) {
                 if (innerTally[j] < 0n) return false;
@@ -133,12 +130,11 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
     }
 
     protected _isTallyBalanced(tally: ITally): boolean {
-        const proposalsTallies: IProposalTally[] = tally.proposalsTallies;
-        let amountOfJudges: bigint =
-            proposalsTallies[proposalsTallies.length - 1].amountOfJudgments;
+        const proposals: IProposal[] = tally.proposals;
+        let amountOfJudges: bigint = proposals[proposals.length - 1].voteAmount;
 
-        for (let i: number = proposalsTallies.length - 2; i > -1; --i)
-            if (proposalsTallies[i].amountOfJudgments != amountOfJudges) return false;
+        for (let i: number = proposals.length - 2; i > -1; --i)
+            if (proposals[i].voteAmount != amountOfJudges) return false;
 
         return true;
     }
@@ -148,50 +144,53 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
      * grade to "best" grade.
      *
      * @param tally Holds the tallies of each Grade for a single Proposal
-     * @param amountOfJudges
+     * @param voterAmount
      * @param favorContestation Use the lower median, for example
      * @param onlyNumbers Do not use separation characters, match `^[0-9]+$`
      * @return the score of the proposal
      */
     protected _computeScore(
-        proposalTally: IProposalTally,
-        amountOfJudges: bigint,
+        proposal: IProposal,
+        voterAmount: bigint,
         favorContestation: boolean | undefined = undefined,
         onlyNumbers: boolean | undefined = undefined
     ): string {
         favorContestation = favorContestation || this._favorContestation;
         onlyNumbers = onlyNumbers || this._numerizeScore;
 
-        let analysis: ProposalTallyAnalysis = new ProposalTallyAnalysis();
-        let amountOfGrades: number = proposalTally.tally.length;
-        let digitsForGrade: number = this._countDigits(amountOfGrades);
-        let digitsForGroup: number = this._countDigits(amountOfJudges) + 1;
+        let analysis: ProposalAnalysis = new ProposalAnalysis();
+        let mentionAmount: number = proposal.mentionAmount;
+        let digitsForGrade: number = this._countDigits(mentionAmount);
+        let digitsForGroup: number = this._countDigits(voterAmount) + 1;
 
-        let currentTally: IProposalTally = proposalTally.clone();
+        let currentProposal: IProposal = proposal.clone();
 
         let score: string = "";
 
-        for (let i: number = 0; i < amountOfGrades; i++) {
-            analysis.update(currentTally, favorContestation);
+        for (let i: number = 0; i < mentionAmount; i++) {
+            analysis.update(currentProposal, favorContestation);
 
             if (0 < i && !onlyNumbers) {
                 score += "/";
             }
 
-            score += analysis.medianGrade.toString().padStart(digitsForGrade, "0");
+            score += analysis.medianMentionIndex.toString().padStart(digitsForGrade, "0");
 
             if (!onlyNumbers) {
                 score += "_";
             }
 
             score += (
-                amountOfJudges +
+                voterAmount +
                 analysis.secondMedianGroupSize * BigInt(analysis.secondMedianGroupSign)
             )
                 .toString()
                 .padStart(digitsForGroup, "0");
 
-            currentTally.moveJudgments(analysis.medianGrade, analysis.secondMedianGrade);
+            currentProposal.moveVotes(
+                analysis.medianMentionIndex,
+                analysis.secondMedianMentionIndex
+            );
         }
 
         return score;

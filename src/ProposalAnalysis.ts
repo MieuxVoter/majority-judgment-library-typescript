@@ -1,4 +1,4 @@
-import { IProposalTally } from "./IProposalTally";
+import { IProposal } from "./IProposal";
 
 /**
  * Collect useful data on a proposal tally. Does NOT compute the rank, but provides all we need.
@@ -8,74 +8,68 @@ import { IProposalTally } from "./IProposalTally";
  * allows us to bypass the floating-point nightmare of the normalization of merit profiles, which is
  * one way to handle default grades on some polls.
  */
-export class ProposalTallyAnalysis {
-    protected _proposalTally: IProposalTally;
-    protected _totalSize: bigint = 0n; // amount of judges
-    protected _medianGrade: number = 0;
+export class ProposalAnalysis {
+    protected _proposal: IProposal;
+    protected _medianMentionIndex: number = 0;
     protected _medianGroupSize: bigint = 0n; // amount of judges in the median group
-    protected _contestationGrade: number = 0; // "best" grade of the contestation group
+    protected _contestationMentionIndex: number = 0; // "best" grade of the contestation group
     protected _contestationGroupSize: bigint = 0n; // of lower grades than median
-    protected _adhesionGrade: number = 0; // "worst" grade of the adhesion group
+    protected _adhesionMentionIndex: number = 0; // "worst" grade of the adhesion group
     protected _adhesionGroupSize: bigint = 0n; // of higher grades than median
-    protected _secondMedianGrade: number = 0; // grade of the biggest group out of the median
+    protected _secondMedianMentionIndex: number = 0; // grade of the biggest group out of the median
     protected _secondMedianGroupSize: bigint = 0n; // either contestation or adhesion
     protected _secondMedianGroupSign: number = 0; // -1 for contestation, +1 for adhesion, 0 for empty group size
 
     public constructor(
-        proposalTally: IProposalTally | undefined = undefined,
+        proposal: IProposal | undefined = undefined,
         favorContestation: boolean = true
     ) {
-        if (proposalTally != undefined) this.update(proposalTally, favorContestation);
+        if (proposal != undefined) this.update(proposal, favorContestation);
     }
 
-    public update(proposalTally: IProposalTally, favorContestation: boolean = true) {
-        this._proposalTally = proposalTally;
-        this._totalSize = 0n;
-        this._medianGrade = 0;
+    public update(proposal: IProposal, favorContestation: boolean = true) {
+        this._proposal = proposal;
+        this._medianMentionIndex = 0;
         this._medianGroupSize = 0n;
-        this._contestationGrade = 0;
+        this._contestationMentionIndex = 0;
         this._contestationGroupSize = 0n;
-        this._adhesionGrade = 0;
+        this._adhesionMentionIndex = 0;
         this._adhesionGroupSize = 0n;
-        this._secondMedianGrade = 0;
+        this._secondMedianMentionIndex = 0;
         this._secondMedianGroupSize = 0n;
         this._secondMedianGroupSign = 0;
 
-        const gradesTallies: bigint[] = proposalTally.tally;
+        const gradesTallies: bigint[] = proposal.meritProfile;
+        const voteAmount: bigint = proposal.voteAmount;
 
-        for (let i: number = gradesTallies.length - 1; i > -1; --i) {
-            // assert(0 <= gradeTally);  // Negative tallies are not allowed.
-            this._totalSize += gradesTallies[i];
-        }
-
-        const adjustedTotal: bigint = favorContestation ? this._totalSize - 1n : this._totalSize;
+        const adjustedTotal: bigint = favorContestation ? voteAmount - 1n : voteAmount;
         const medianIndex: bigint = adjustedTotal / 2n;
 
         let startIndex: bigint = 0n;
         let cursorIndex: bigint = 0n;
-        const amountOfGrades: number = gradesTallies.length;
-        let gradeTally: bigint;
+        const mentionAmont: number = gradesTallies.length;
+        let mentionVoteAmount: bigint;
 
-        for (let gradeIndex: number = 0; gradeIndex < amountOfGrades; gradeIndex++) {
-            gradeTally = proposalTally.tally[gradeIndex];
+        for (let mentionIndex: number = 0; mentionIndex < mentionAmont; mentionIndex++) {
+            mentionVoteAmount = proposal.meritProfile[mentionIndex];
 
-            if (gradeTally == 0n) {
+            if (mentionVoteAmount == 0n) {
                 continue;
             }
 
             startIndex = cursorIndex;
-            cursorIndex += gradeTally;
+            cursorIndex += mentionVoteAmount;
 
             if (startIndex < medianIndex && cursorIndex <= medianIndex) {
-                this._contestationGroupSize += gradeTally;
-                this._contestationGrade = gradeIndex;
+                this._contestationGroupSize += mentionVoteAmount;
+                this._contestationMentionIndex = mentionIndex;
             } else if (startIndex <= medianIndex && medianIndex < cursorIndex) {
-                this._medianGroupSize = gradeTally;
-                this._medianGrade = gradeIndex;
+                this._medianGroupSize = mentionVoteAmount;
+                this._medianMentionIndex = mentionIndex;
             } else if (startIndex > medianIndex && medianIndex < cursorIndex) {
-                this._adhesionGroupSize += gradeTally;
-                if (0 == this._adhesionGrade) {
-                    this._adhesionGrade = gradeIndex;
+                this._adhesionGroupSize += mentionVoteAmount;
+                if (0 == this._adhesionMentionIndex) {
+                    this._adhesionMentionIndex = mentionIndex;
                 }
             }
         }
@@ -85,50 +79,52 @@ export class ProposalTallyAnalysis {
             : this.adhesionGroupSize < this.contestationGroupSize;
 
         if (contestationIsBiggest) {
-            this._secondMedianGrade = this._contestationGrade;
+            this._secondMedianMentionIndex = this._contestationMentionIndex;
             this._secondMedianGroupSize = this._contestationGroupSize;
+
             if (0 < this._secondMedianGroupSize) {
                 this._secondMedianGroupSign = -1;
             }
         } else {
-            this._secondMedianGrade = this._adhesionGrade;
+            this._secondMedianMentionIndex = this._adhesionMentionIndex;
             this._secondMedianGroupSize = this._adhesionGroupSize;
+
             if (0 < this._secondMedianGroupSize) {
                 this._secondMedianGroupSign = 1;
             }
         }
     }
 
-    public get totalSize(): bigint {
-        return this._totalSize;
+    public get proposal(): IProposal {
+        return this._proposal;
     }
 
-    public get medianGrade(): number {
-        return this._medianGrade;
+    public get medianMentionIndex(): number {
+        return this._medianMentionIndex;
     }
 
     public get medianGroupSize(): bigint {
         return this._medianGroupSize;
     }
 
-    public get contestationGrade(): number {
-        return this._contestationGrade;
+    public get contestationMentionIndex(): number {
+        return this._contestationMentionIndex;
     }
 
     public get contestationGroupSize(): bigint {
         return this._contestationGroupSize;
     }
 
-    public get adhesionGrade(): number {
-        return this._adhesionGrade;
+    public get adhesionMentionIndex(): number {
+        return this._adhesionMentionIndex;
     }
 
     public get adhesionGroupSize(): bigint {
         return this._adhesionGroupSize;
     }
 
-    public get secondMedianGrade(): number {
-        return this._secondMedianGrade;
+    public get secondMedianMentionIndex(): number {
+        return this._secondMedianMentionIndex;
     }
 
     public get secondMedianGroupSize(): bigint {

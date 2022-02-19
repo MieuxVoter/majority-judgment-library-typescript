@@ -1,14 +1,14 @@
 import { MajorityJudgmentDeliberator } from "./MajorityJudgmentDeliberator";
 import { Tally } from "./Tally";
 import { ITally } from "./ITally";
-import { ProposalTally } from "./ProposalTally";
+import { Proposal } from "./Proposal";
 import { IResult } from "./IResult";
-import { CollectedTally } from "./CollectedTally";
+import { TallyCollector } from "./TallyCollector";
 import { IDeliberator } from "./IDeliberator";
 import { NormalizedTally } from "./NormalizedTally";
 import { StaticDefaultTally } from "./StaticDefaultTally";
 import { MedianDefaultTally } from "./MedianDefaultTally";
-import { IProposalTally } from "./IProposalTally";
+import { IProposal } from "./IProposal";
 import { UnbalancedTallyError } from "./UnbalancedTallyError";
 import { IncoherentTallyError } from "./IncoherentTallyError";
 
@@ -16,8 +16,8 @@ describe("MajorityJudgmentDeliberator", () => {
     it("Test the basic demo usage of the README", () => {
         const deliberator: MajorityJudgmentDeliberator = new MajorityJudgmentDeliberator();
         const tally: ITally = new Tally([
-            new ProposalTally([4n, 5n, 2n, 1n, 3n, 1n, 2n]),
-            new ProposalTally([3n, 6n, 2n, 1n, 3n, 1n, 2n]),
+            new Proposal([4n, 5n, 2n, 1n, 3n, 1n, 2n]),
+            new Proposal([3n, 6n, 2n, 1n, 3n, 1n, 2n]),
         ]);
 
         const result: IResult = deliberator.deliberate(tally);
@@ -31,8 +31,8 @@ describe("MajorityJudgmentDeliberator", () => {
     it("Test the basic demo usage with billions of participants", () => {
         const deliberator: MajorityJudgmentDeliberator = new MajorityJudgmentDeliberator();
         const tally: ITally = new Tally([
-            new ProposalTally([11312415004n, 21153652410n, 24101523299n, 18758623562n]),
-            new ProposalTally([11312415004n, 21153652400n, 24101523299n, 18758623572n]),
+            new Proposal([11312415004n, 21153652410n, 24101523299n, 18758623562n]),
+            new Proposal([11312415004n, 21153652400n, 24101523299n, 18758623572n]),
         ]);
 
         const result: IResult = deliberator.deliberate(tally);
@@ -47,7 +47,7 @@ describe("MajorityJudgmentDeliberator", () => {
         const amountOfProposals: number = 3;
         const amountOfGrades: number = 4;
         const deliberator: IDeliberator = new MajorityJudgmentDeliberator();
-        const tally: CollectedTally = new CollectedTally(amountOfProposals, amountOfGrades);
+        const tally: TallyCollector = new TallyCollector(amountOfProposals, amountOfGrades);
 
         const firstProposal: number = 0;
         const secondProposal: number = 1;
@@ -97,7 +97,7 @@ describe("MajorityJudgmentDeliberator", () => {
         const amountOfProposals: number = 4;
         const amountOfGrades: number = 3;
         const deliberator: IDeliberator = new MajorityJudgmentDeliberator();
-        const tally: CollectedTally = new CollectedTally(amountOfProposals, amountOfGrades);
+        const tally: TallyCollector = new TallyCollector(amountOfProposals, amountOfGrades);
 
         const firstProposal: number = 0;
         const secondProposal: number = 1;
@@ -122,7 +122,7 @@ describe("MajorityJudgmentDeliberator", () => {
 
         tally.collect(fourthProposal, gradeGood);
 
-        const result: IResult = deliberator.deliberate(new NormalizedTally(tally.proposalsTallies));
+        const result: IResult = deliberator.deliberate(new NormalizedTally(tally.proposals));
 
         expect(result).toBeDefined();
         expect(result.proposalResults.length).toBe(4);
@@ -138,11 +138,7 @@ describe("MajorityJudgmentDeliberator", () => {
         const defaultGrade: number = 0;
 
         const tally: ITally = new StaticDefaultTally(
-            [
-                new ProposalTally([0n, 0n, 1n]),
-                new ProposalTally([0n, 3n, 0n]),
-                new ProposalTally([2n, 0n, 1n]),
-            ],
+            [new Proposal([0n, 0n, 1n]), new Proposal([0n, 3n, 0n]), new Proposal([2n, 0n, 1n])],
             amountOfJudges,
             defaultGrade
         );
@@ -161,10 +157,10 @@ describe("MajorityJudgmentDeliberator", () => {
         const amountOfJudges: bigint = 60000000n;
         const defaultGrade: number = 0;
         const deliberator: IDeliberator = new MajorityJudgmentDeliberator();
-        const tallies: ProposalTally[] = new Array(amountOfProposals);
+        const tallies: Proposal[] = new Array(amountOfProposals);
 
         for (let i: number = 0; i < amountOfProposals; i++) {
-            tallies[i] = new ProposalTally([7n, 204n, 107n]);
+            tallies[i] = new Proposal([7n, 204n, 107n]);
         }
 
         const tally: ITally = new StaticDefaultTally(tallies, amountOfJudges, defaultGrade);
@@ -184,11 +180,11 @@ describe("MajorityJudgmentDeliberator", () => {
         const deliberator: IDeliberator = new MajorityJudgmentDeliberator();
         const tally: ITally = new MedianDefaultTally(
             [
-                new ProposalTally([0n, 0n, 1n]),
-                new ProposalTally([0n, 1n, 0n]),
-                new ProposalTally([1n, 1n, 1n]),
-                new ProposalTally([1n, 0n, 1n]),
-                new ProposalTally([1n, 0n, 0n]),
+                new Proposal([0n, 0n, 1n]),
+                new Proposal([0n, 1n, 0n]),
+                new Proposal([1n, 1n, 1n]),
+                new Proposal([1n, 0n, 1n]),
+                new Proposal([1n, 0n, 0n]),
             ],
             amountOfJudges
         );
@@ -207,12 +203,12 @@ describe("MajorityJudgmentDeliberator", () => {
     it("Test normalized tallies with thousands of (prime) proposals", () => {
         const amountOfProposals: number = primes.length; // 1437
         const deliberator: IDeliberator = new MajorityJudgmentDeliberator();
-        const tallies: IProposalTally[] = new Array(amountOfProposals);
+        const tallies: IProposal[] = new Array(amountOfProposals);
         let prime: number;
 
         for (let i: number = 0; i < amountOfProposals; i++) {
             prime = primes[i % primes.length];
-            tallies[i] = new ProposalTally([BigInt(prime - 1), 1n, 0n]);
+            tallies[i] = new Proposal([BigInt(prime - 1), 1n, 0n]);
         }
 
         const tally: ITally = new NormalizedTally(tallies);
@@ -232,10 +228,10 @@ describe("MajorityJudgmentDeliberator", () => {
 
         const amountOfProposals: number = primes.length; // 1437
         const deliberator: IDeliberator = new MajorityJudgmentDeliberator();
-        const tallies: IProposalTally[] = new Array(amountOfProposals);
+        const tallies: IProposal[] = new Array(amountOfProposals);
 
         for (let i: number = 0; i < amountOfProposals; i++) {
-            tallies[i] = new ProposalTally([BigInt(i), 1n, 0n]);
+            tallies[i] = new Proposal([BigInt(i), 1n, 0n]);
         }
 
         const tally: ITally = new NormalizedTally(tallies);
@@ -255,11 +251,7 @@ describe("MajorityJudgmentDeliberator", () => {
         const amountOfJudges: bigint = 4n;
         const deliberator: IDeliberator = new MajorityJudgmentDeliberator(favorContestation);
         const tally: ITally = new Tally(
-            [
-                new ProposalTally([2n, 0n, 2n]),
-                new ProposalTally([0n, 2n, 2n]),
-                new ProposalTally([2n, 1n, 1n]),
-            ],
+            [new Proposal([2n, 0n, 2n]), new Proposal([0n, 2n, 2n]), new Proposal([2n, 1n, 1n])],
             amountOfJudges
         );
 
@@ -270,9 +262,9 @@ describe("MajorityJudgmentDeliberator", () => {
         expect(result.proposalResults[0].rank).toBe(2);
         expect(result.proposalResults[1].rank).toBe(1);
         expect(result.proposalResults[2].rank).toBe(3);
-        expect(result.proposalResults[0].analysis.medianGrade).toBe(2);
-        expect(result.proposalResults[1].analysis.medianGrade).toBe(2);
-        expect(result.proposalResults[2].analysis.medianGrade).toBe(1);
+        expect(result.proposalResults[0].analysis.medianMentionIndex).toBe(2);
+        expect(result.proposalResults[1].analysis.medianMentionIndex).toBe(2);
+        expect(result.proposalResults[2].analysis.medianMentionIndex).toBe(1);
     });
 
     it("Test numeric score", () => {
@@ -285,7 +277,7 @@ describe("MajorityJudgmentDeliberator", () => {
             numerizeScore
         );
         const tally: ITally = new Tally(
-            [new ProposalTally([1n, 0n, 2n]), new ProposalTally([0n, 2n, 1n])],
+            [new Proposal([1n, 0n, 2n]), new Proposal([0n, 2n, 1n])],
             amountOfJudges
         );
 
@@ -301,11 +293,7 @@ describe("MajorityJudgmentDeliberator", () => {
         const amountOfJudges: bigint = 2n;
         const deliberator: IDeliberator = new MajorityJudgmentDeliberator();
         const tally: ITally = new Tally(
-            [
-                new ProposalTally([0n, 0n, 2n]),
-                new ProposalTally([0n, 1n, 0n]),
-                new ProposalTally([2n, 0n, 0n]),
-            ],
+            [new Proposal([0n, 0n, 2n]), new Proposal([0n, 1n, 0n]), new Proposal([2n, 0n, 0n])],
             amountOfJudges
         );
 
@@ -322,7 +310,7 @@ describe("MajorityJudgmentDeliberator", () => {
         const amountOfJudges: bigint = 2n;
         const deliberator: IDeliberator = new MajorityJudgmentDeliberator();
         const tally: ITally = new Tally(
-            [new ProposalTally([0n, 4n, -2n]), new ProposalTally([0n, 2n, 0n])],
+            [new Proposal([0n, 4n, -2n]), new Proposal([0n, 2n, 0n])],
             amountOfJudges
         );
 
