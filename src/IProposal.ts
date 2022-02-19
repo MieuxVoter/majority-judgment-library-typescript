@@ -1,24 +1,31 @@
 /**
- * Also known as the merit profile of a proposal (aka. candidate), this holds the amounts of
- * judgments received per grade.
+ * Represent a proposal and its merit profile (holding the amounts of vote received per mention).
  */
 export interface IProposal {
     /**
-     * The tallies of each Grade, that is the amount of judgments received for each Grade by the
-     * Proposal, from "worst" ("most conservative") Grade to "best" Grade.
+     * Per mention index, the amount of vote. Mention indexes are sorted from "worst" ("most conservative") to "best" mention.
      */
     get meritProfile(): bigint[];
 
     /**
-     * Should be the sum of getTally()
-     *
-     * @return The total amount of judgments received by this proposal.
+     * The sum of all vote in {@see meritProfile}
      */
-    get amountOfJudgments(): bigint;
+    get voteAmount(): bigint;
 
-    /** Homemade factory to skip the clone() shenanigans. Used by the score calculus. */
+    /**
+     * Amount of different mention
+     */
+    get mentionAmount(): number;
+
+    /**
+     * @returns a copy of this proposal
+     */
     clone(): IProposal;
 
-    /** Move judgments that were fromGrade into intoGrade. Used by the score calculus. */
-    moveJudgments(fromGrade: number, intoGrade: number): void;
+    /**
+     * Move votes that were {@param fromMentionIndex} into {@param intoMentionIndex}. Used by the score calculus.
+     * @param fromMentionIndex the amount at this index will be set to 0
+     * @param intoMentionIndex the amount at {@param fromMentionIndex} will be added to the amount at {@param intoMentionIndex}
+     */
+    moveVotes(fromMentionIndex: number, intoMentionIndex: number): void;
 }
