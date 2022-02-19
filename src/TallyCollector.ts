@@ -5,6 +5,8 @@ export class TallyCollector implements ITally {
     private _proposals: Proposal[] = [];
 
     public constructor(proposalAmount: number, mentionAmount: number) {
+        console.assert(proposalAmount > 0, "Proposal amount cannot be less than 1");
+        console.assert(mentionAmount > 0, "Mention amount cannot be less than 1");
 
         let meritProfile: bigint[];
 
