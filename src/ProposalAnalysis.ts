@@ -10,7 +10,6 @@ import { IProposal } from "./IProposal";
  */
 export class ProposalAnalysis {
     protected _proposal: IProposal;
-    protected _totalSize: bigint = 0n; // amount of judges
     protected _medianMentionIndex: number = 0;
     protected _medianGroupSize: bigint = 0n; // amount of judges in the median group
     protected _contestationMentionIndex: number = 0; // "best" grade of the contestation group
@@ -30,7 +29,6 @@ export class ProposalAnalysis {
 
     public update(proposal: IProposal, favorContestation: boolean = true) {
         this._proposal = proposal;
-        this._totalSize = 0n;
         this._medianMentionIndex = 0;
         this._medianGroupSize = 0n;
         this._contestationMentionIndex = 0;
@@ -42,38 +40,34 @@ export class ProposalAnalysis {
         this._secondMedianGroupSign = 0;
 
         const gradesTallies: bigint[] = proposal.meritProfile;
+        const voteAmount: bigint = proposal.voteAmount;
 
-        for (let i: number = gradesTallies.length - 1; i > -1; --i) {
-            // assert(0 <= gradeTally);  // Negative tallies are not allowed.
-            this._totalSize += gradesTallies[i];
-        }
-
-        const adjustedTotal: bigint = favorContestation ? this._totalSize - 1n : this._totalSize;
+        const adjustedTotal: bigint = favorContestation ? voteAmount - 1n : voteAmount;
         const medianIndex: bigint = adjustedTotal / 2n;
 
         let startIndex: bigint = 0n;
         let cursorIndex: bigint = 0n;
         const mentionAmont: number = gradesTallies.length;
-        let voteAmount: bigint;
+        let mentionVoteAmount: bigint;
 
         for (let mentionIndex: number = 0; mentionIndex < mentionAmont; mentionIndex++) {
-            voteAmount = proposal.meritProfile[mentionIndex];
+            mentionVoteAmount = proposal.meritProfile[mentionIndex];
 
-            if (voteAmount == 0n) {
+            if (mentionVoteAmount == 0n) {
                 continue;
             }
 
             startIndex = cursorIndex;
-            cursorIndex += voteAmount;
+            cursorIndex += mentionVoteAmount;
 
             if (startIndex < medianIndex && cursorIndex <= medianIndex) {
-                this._contestationGroupSize += voteAmount;
+                this._contestationGroupSize += mentionVoteAmount;
                 this._contestationMentionIndex = mentionIndex;
             } else if (startIndex <= medianIndex && medianIndex < cursorIndex) {
-                this._medianGroupSize = voteAmount;
+                this._medianGroupSize = mentionVoteAmount;
                 this._medianMentionIndex = mentionIndex;
             } else if (startIndex > medianIndex && medianIndex < cursorIndex) {
-                this._adhesionGroupSize += voteAmount;
+                this._adhesionGroupSize += mentionVoteAmount;
                 if (0 == this._adhesionMentionIndex) {
                     this._adhesionMentionIndex = mentionIndex;
                 }
@@ -101,8 +95,8 @@ export class ProposalAnalysis {
         }
     }
 
-    public get totalSize(): bigint {
-        return this._totalSize;
+    public get proposal(): IProposal {
+        return this._proposal;
     }
 
     public get medianMentionIndex(): number {
