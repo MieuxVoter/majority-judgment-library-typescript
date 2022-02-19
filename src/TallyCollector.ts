@@ -49,6 +49,11 @@ export class TallyCollector implements ITally {
         return amountOfJudges;
     }
 
+    /**
+     * Add a vote to a mention of a proposal
+     * @param proposalIndex
+     * @param mentionIndex
+     */
     public collect(proposalIndex: number, mentionIndex: number): void {
         if (proposalIndex < 0 && proposalIndex >= this.proposalAmount)
             throw new Error(
