@@ -50,6 +50,18 @@ export class TallyCollector implements ITally {
     }
 
     public collect(proposalIndex: number, mentionIndex: number): void {
+        console.assert(
+            proposalIndex >= 0 && proposalIndex < this.proposalAmount,
+            `Proposal index must be between the min index (0) and the max index (${
+                this.proposalAmount - 1
+            })`
+        );
+        console.assert(
+            mentionIndex >= 0 && mentionIndex < this.mentionAmount,
+            `Mention index must be between the min index (0) and the max index (${
+                this.mentionAmount - 1
+            })`
+        );
 
         const tally: bigint[] = this.proposals[proposalIndex].meritProfile;
         tally[mentionIndex] = tally[mentionIndex] + 1n;
