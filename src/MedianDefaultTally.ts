@@ -8,12 +8,12 @@ import { ProposalTallyAnalysis } from "./ProposalTallyAnalysis";
  * not received the exact same amount of votes and the median grade is considered a sane default.
  */
 export class MedianDefaultTally extends DefaultGradeTally implements ITally {
-    public constructor(proposalsTallies: IProposal[], amountOfJudges: bigint) {
-        super(proposalsTallies, amountOfJudges);
-        this._fillWithDefaultGrade();
+    public constructor(proposals: IProposal[], voterAmount: bigint) {
+        super(proposals, voterAmount);
+        this._fillWithDefaultMention();
     }
 
-    protected override _getDefaultGradeForProposal(proposalTally: IProposal): number {
-        return new ProposalTallyAnalysis(proposalTally).medianGrade;
+    protected override _getDefaultMentionIndexForProposal(proposal: IProposal): number {
+        return new ProposalTallyAnalysis(proposal).medianGrade;
     }
 }

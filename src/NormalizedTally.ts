@@ -20,29 +20,29 @@ export class NormalizedTally extends Tally implements ITally {
     }
 
     protected _initializeFromProposalsTallies(proposals: IProposal[]): void {
-        const amountOfProposals: number = this.proposalAmount;
-        let amountOfJudges: bigint = 1n;
+        const proposalAmount: number = this.proposalAmount;
+        let voterAmount: bigint = 1n;
 
         for (let i: number = proposals.length - 1; i > -1; --i) {
-            amountOfJudges = lcm(amountOfJudges, proposals[i].voteAmount);
+            voterAmount = lcm(voterAmount, proposals[i].voteAmount);
         }
 
-        if (amountOfJudges == 0n) {
+        if (voterAmount == 0n) {
             throw new Error("Cannot normalize: one or more proposals have no vote.");
         }
 
         // Normalize proposals to the LCM
-        let normalizedTallies: Proposal[] = new Array(amountOfProposals);
+        let normalizedTallies: Proposal[] = new Array(proposalAmount);
         let proposal: IProposal;
         let normalizedProposal: Proposal;
         let factor: bigint;
         let mentionAmount: number;
         let meritProfile: bigint[];
 
-        for (let i: number = 0; i < amountOfProposals; i++) {
+        for (let i: number = 0; i < proposalAmount; i++) {
             proposal = proposals[i];
             normalizedProposal = new Proposal(proposal.meritProfile);
-            factor = amountOfJudges / proposal.voteAmount;
+            factor = voterAmount / proposal.voteAmount;
             mentionAmount = proposal.meritProfile.length;
             meritProfile = normalizedProposal.meritProfile;
 
@@ -54,6 +54,6 @@ export class NormalizedTally extends Tally implements ITally {
         }
 
         this._proposals = normalizedTallies;
-        this._voterAmount = amountOfJudges;
+        this._voterAmount = voterAmount;
     }
 }

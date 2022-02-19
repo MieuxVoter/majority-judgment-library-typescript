@@ -14,13 +14,9 @@ export class StaticDefaultTally extends DefaultGradeTally implements ITally {
      */
     protected _defaultGrade: number = 0;
 
-    public constructor(
-        proposalsTallies: IProposal[],
-        amountOfJudges: bigint,
-        defaultGrade: number
-    ) {
-        super(proposalsTallies, amountOfJudges);
-        this._defaultGrade = defaultGrade;
+    public constructor(proposals: IProposal[], voterAmount: bigint, defaultMentionIndex: number) {
+        super(proposals, voterAmount);
+        this._defaultGrade = defaultMentionIndex;
         this._fillWithDefaultGrade();
     }
 
