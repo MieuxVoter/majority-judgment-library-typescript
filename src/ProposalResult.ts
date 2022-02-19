@@ -1,3 +1,4 @@
+import { IProposal } from "./IProposal";
 import { IProposalResult } from "./IProposalResult";
 import { ProposalAnalysis } from "./ProposalAnalysis";
 
@@ -10,6 +11,10 @@ export class ProposalResult implements IProposalResult {
         this._analysis = analysis;
         this._score = score;
         this._rank = rank;
+    }
+
+    get proposal(): IProposal {
+        return this._analysis.proposal;
     }
 
     public get rank(): number {
