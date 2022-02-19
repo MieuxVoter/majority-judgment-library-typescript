@@ -96,7 +96,7 @@ for (let i: number = 0; i < proposalAmount; i++)
 ### Prevent error when vote amount is not the same for each proposal
 
 ```typescript
-import { ITally, Proposal, NormalizedTally } from ".";
+import { ITally, Proposal, NormalizedTally } from "majority-judgment";
 
 // If the sum vote in proposal are not equal. You can use NormalizedTally.
 const tally: ITally = new NormalizedTally([
