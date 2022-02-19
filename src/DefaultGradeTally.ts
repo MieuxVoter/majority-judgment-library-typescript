@@ -16,8 +16,8 @@ export abstract class DefaultGradeTally extends Tally implements ITally {
     }
 
     protected _fillWithDefaultGrade(): void {
-        const amountOfProposals: number = this.amountOfProposals;
-        const proposalsTallies = this.proposalsTallies;
+        const amountOfProposals: number = this.proposalAmount;
+        const proposalsTallies = this.proposals;
         let proposalTally: IProposal;
         let defaultGrade: number;
         let amountOfJudgments: bigint;
@@ -27,8 +27,8 @@ export abstract class DefaultGradeTally extends Tally implements ITally {
         for (let i: number = 0; i < amountOfProposals; i++) {
             proposalTally = proposalsTallies[i];
             defaultGrade = this._getDefaultGradeForProposal(proposalTally);
-            amountOfJudgments = proposalTally.amountOfJudgments;
-            missingAmount = this.amountOfJudges - amountOfJudgments;
+            amountOfJudgments = proposalTally.voteAmount;
+            missingAmount = this.voterAmount - amountOfJudgments;
             console.assert(missingAmount > 0, "More judgments than judges!");
 
             if (missingAmount > 0) {

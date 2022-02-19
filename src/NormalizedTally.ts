@@ -20,11 +20,11 @@ export class NormalizedTally extends Tally implements ITally {
     }
 
     protected _initializeFromProposalsTallies(proposalsTallies: IProposal[]): void {
-        const amountOfProposals: number = this.amountOfProposals;
+        const amountOfProposals: number = this.proposalAmount;
         let amountOfJudges: bigint = 1n;
 
         for (let i: number = proposalsTallies.length - 1; i > -1; --i) {
-            amountOfJudges = lcm(amountOfJudges, proposalsTallies[i].amountOfJudgments);
+            amountOfJudges = lcm(amountOfJudges, proposalsTallies[i].voteAmount);
         }
 
         if (amountOfJudges == 0n) {
@@ -42,7 +42,7 @@ export class NormalizedTally extends Tally implements ITally {
         for (let i: number = 0; i < amountOfProposals; i++) {
             proposalTally = proposalsTallies[i];
             normalizedTally = new Proposal(proposalTally.meritProfile);
-            factor = amountOfJudges / proposalTally.amountOfJudgments;
+            factor = amountOfJudges / proposalTally.voteAmount;
             amountOfGrades = proposalTally.meritProfile.length;
             meritProfile = normalizedTally.meritProfile;
 

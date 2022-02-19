@@ -21,15 +21,19 @@ export class Tally implements ITally {
         }
     }
 
-    public get proposalsTallies(): IProposal[] {
+    public get mentionAmount(): number {
+        return this._proposalsTallies[0].mentionAmount;
+    }
+
+    public get proposals(): IProposal[] {
         return this._proposalsTallies;
     }
 
-    public get amountOfProposals(): number {
+    public get proposalAmount(): number {
         return this._proposalsTallies.length;
     }
 
-    public get amountOfJudges(): bigint {
+    public get voterAmount(): bigint {
         return this._amountOfJudges;
     }
 
@@ -38,7 +42,7 @@ export class Tally implements ITally {
         let tmp: bigint;
 
         for (let i: number = this._proposalsTallies.length - 1; i > -1; --i) {
-            tmp = this._proposalsTallies[i].amountOfJudgments;
+            tmp = this._proposalsTallies[i].voteAmount;
 
             if (tmp > amountOfJudges) amountOfJudges = tmp;
         }

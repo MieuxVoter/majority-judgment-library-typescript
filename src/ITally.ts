@@ -1,7 +1,8 @@
 import { IProposal } from "./IProposal";
 
 export interface ITally {
-    get proposalsTallies(): IProposal[];
-    get amountOfJudges(): bigint;
-    get amountOfProposals(): number;
+    get proposals(): IProposal[];
+    get voterAmount(): bigint;
+    get proposalAmount(): number;
+    get mentionAmount(): number;
 }

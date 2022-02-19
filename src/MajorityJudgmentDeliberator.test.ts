@@ -3,7 +3,7 @@ import { Tally } from "./Tally";
 import { ITally } from "./ITally";
 import { Proposal } from "./Proposal";
 import { IResult } from "./IResult";
-import { CollectedTally } from "./CollectedTally";
+import { TallyCollector } from "./TallyCollector";
 import { IDeliberator } from "./IDeliberator";
 import { NormalizedTally } from "./NormalizedTally";
 import { StaticDefaultTally } from "./StaticDefaultTally";
@@ -47,7 +47,7 @@ describe("MajorityJudgmentDeliberator", () => {
         const amountOfProposals: number = 3;
         const amountOfGrades: number = 4;
         const deliberator: IDeliberator = new MajorityJudgmentDeliberator();
-        const tally: CollectedTally = new CollectedTally(amountOfProposals, amountOfGrades);
+        const tally: TallyCollector = new TallyCollector(amountOfProposals, amountOfGrades);
 
         const firstProposal: number = 0;
         const secondProposal: number = 1;
@@ -97,7 +97,7 @@ describe("MajorityJudgmentDeliberator", () => {
         const amountOfProposals: number = 4;
         const amountOfGrades: number = 3;
         const deliberator: IDeliberator = new MajorityJudgmentDeliberator();
-        const tally: CollectedTally = new CollectedTally(amountOfProposals, amountOfGrades);
+        const tally: TallyCollector = new TallyCollector(amountOfProposals, amountOfGrades);
 
         const firstProposal: number = 0;
         const secondProposal: number = 1;
@@ -122,7 +122,7 @@ describe("MajorityJudgmentDeliberator", () => {
 
         tally.collect(fourthProposal, gradeGood);
 
-        const result: IResult = deliberator.deliberate(new NormalizedTally(tally.proposalsTallies));
+        const result: IResult = deliberator.deliberate(new NormalizedTally(tally.proposals));
 
         expect(result).toBeDefined();
         expect(result.proposalResults.length).toBe(4);

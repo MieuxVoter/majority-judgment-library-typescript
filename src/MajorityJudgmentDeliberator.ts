@@ -47,9 +47,9 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
     public deliberate(tally: ITally): IResult {
         this._checkTally(tally);
 
-        const tallies: IProposal[] = tally.proposalsTallies;
-        const amountOfJudges: bigint = tally.amountOfJudges;
-        const amountOfProposals: number = tally.amountOfProposals;
+        const tallies: IProposal[] = tally.proposals;
+        const amountOfJudges: bigint = tally.voterAmount;
+        const amountOfProposals: number = tally.proposalAmount;
         const proposalResults: ProposalResult[] = [];
 
         let proposalTally: IProposal;
@@ -118,7 +118,7 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
     }
 
     protected _isTallyCoherent(tally: ITally): boolean {
-        const proposalsTallies: IProposal[] = tally.proposalsTallies;
+        const proposalsTallies: IProposal[] = tally.proposals;
         let innerTally: bigint[];
 
         for (let i: number = proposalsTallies.length - 1; i > -1; --i) {
@@ -133,12 +133,11 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
     }
 
     protected _isTallyBalanced(tally: ITally): boolean {
-        const proposalsTallies: IProposal[] = tally.proposalsTallies;
-        let amountOfJudges: bigint =
-            proposalsTallies[proposalsTallies.length - 1].amountOfJudgments;
+        const proposalsTallies: IProposal[] = tally.proposals;
+        let amountOfJudges: bigint = proposalsTallies[proposalsTallies.length - 1].voteAmount;
 
         for (let i: number = proposalsTallies.length - 2; i > -1; --i)
-            if (proposalsTallies[i].amountOfJudgments != amountOfJudges) return false;
+            if (proposalsTallies[i].voteAmount != amountOfJudges) return false;
 
         return true;
     }
@@ -191,7 +190,7 @@ export class MajorityJudgmentDeliberator implements IDeliberator {
                 .toString()
                 .padStart(digitsForGroup, "0");
 
-            currentTally.moveJudgments(analysis.medianGrade, analysis.secondMedianGrade);
+            currentTally.moveVotes(analysis.medianGrade, analysis.secondMedianGrade);
         }
 
         return score;
