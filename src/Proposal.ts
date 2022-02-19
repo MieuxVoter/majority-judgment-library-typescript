@@ -20,6 +20,14 @@ export class Proposal implements IProposal {
     }
 
     public moveVotes(fromMentionIndex: number, intoMentionIndex: number): void {
+        const maxIndex = this.mentionAmount - 1;
+
+        if (fromMentionIndex < 0 || fromMentionIndex > maxIndex)
+            throw new Error(`fromMentionIndex out of range. Min index:0, Max index:${maxIndex}`);
+
+        if (intoMentionIndex < 0 || intoMentionIndex > maxIndex)
+            throw new Error(`intoMentionIndex out of range. Min index:0, Max index:${maxIndex}`);
+
         this._meritProfile[intoMentionIndex] =
             this._meritProfile[intoMentionIndex] + this._meritProfile[fromMentionIndex];
         this._meritProfile[fromMentionIndex] = 0n;
