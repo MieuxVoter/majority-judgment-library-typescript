@@ -5,48 +5,45 @@ import { ITally } from "./ITally";
  * A Basic implementation of a TallyInterface that reads from an array of ProposalTallyInterface.
  */
 export class Tally implements ITally {
-    protected _proposalsTallies: IProposal[];
-    protected _amountOfJudges: bigint;
+    protected _proposals: IProposal[];
+    protected _voterAmount: bigint;
 
-    public constructor(
-        proposalsTallies: IProposal[],
-        amountOfJudges: bigint | undefined = undefined
-    ) {
-        this._proposalsTallies = proposalsTallies;
+    public constructor(proposals: IProposal[], amountOfJudges: bigint | undefined = undefined) {
+        this._proposals = proposals;
 
         if (!amountOfJudges) {
             this._guessAmountOfJudges();
         } else {
-            this._amountOfJudges = amountOfJudges;
+            this._voterAmount = amountOfJudges;
         }
     }
 
     public get mentionAmount(): number {
-        return this._proposalsTallies[0].mentionAmount;
+        return this._proposals[0].mentionAmount;
     }
 
     public get proposals(): IProposal[] {
-        return this._proposalsTallies;
+        return this._proposals;
     }
 
     public get proposalAmount(): number {
-        return this._proposalsTallies.length;
+        return this._proposals.length;
     }
 
     public get voterAmount(): bigint {
-        return this._amountOfJudges;
+        return this._voterAmount;
     }
 
     protected _guessAmountOfJudges(): void {
-        let amountOfJudges: bigint = 0n;
+        let voterAmount: bigint = 0n;
         let tmp: bigint;
 
-        for (let i: number = this._proposalsTallies.length - 1; i > -1; --i) {
-            tmp = this._proposalsTallies[i].voteAmount;
+        for (let i: number = this._proposals.length - 1; i > -1; --i) {
+            tmp = this._proposals[i].voteAmount;
 
-            if (tmp > amountOfJudges) amountOfJudges = tmp;
+            if (tmp > voterAmount) voterAmount = tmp;
         }
 
-        this._amountOfJudges = amountOfJudges;
+        this._voterAmount = voterAmount;
     }
 }
