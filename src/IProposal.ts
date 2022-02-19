@@ -8,7 +8,7 @@ export interface IProposal {
     get meritProfile(): bigint[];
 
     /**
-     * The sum of all vote in {@see meritProfile}
+     * The sum of all vote in {@link meritProfile}
      */
     get voteAmount(): bigint;
 
@@ -23,7 +23,7 @@ export interface IProposal {
     clone(): IProposal;
 
     /**
-     * Move votes that were {@param fromMentionIndex} into {@param intoMentionIndex}. Used by the score calculus.
+     * Move votes that were {@link fromMentionIndex} into {@link intoMentionIndex}. Used by the score calculus.
      * @param fromMentionIndex the amount at this index will be set to 0
      * @param intoMentionIndex the amount at {@param fromMentionIndex} will be added to the amount at {@param intoMentionIndex}
      */

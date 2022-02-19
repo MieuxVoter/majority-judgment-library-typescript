@@ -2,7 +2,7 @@ import { IProposal } from "./IProposal";
 import { ITally } from "./ITally";
 
 /**
- * A Basic implementation of a TallyInterface that reads from an array of ProposalTallyInterface.
+ * A Basic implementation of a {@link ITally} that reads from an array of {@link IProposal}.
  */
 export class Tally implements ITally {
     protected _proposals: IProposal[];
