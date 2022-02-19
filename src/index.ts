@@ -1,5 +1,5 @@
 export * from "./BigintTools";
-export * from "./CollectedTally";
+export * from "./TallyCollector";
 export * from "./DefaultGradeTally";
 export * from "./IDeliberator";
 export * from "./IncoherentTallyError";

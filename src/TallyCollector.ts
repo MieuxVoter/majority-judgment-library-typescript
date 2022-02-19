@@ -1,7 +1,7 @@
 import { ITally } from "./ITally";
 import { Proposal } from "./Proposal";
 
-export class CollectedTally implements ITally {
+export class TallyCollector implements ITally {
     private _amountOfProposals: number = 0;
     private _amountOfGrades: number = 0;
 
@@ -43,7 +43,7 @@ export class CollectedTally implements ITally {
         const proposalTallies = this.proposalsTallies;
 
         for (let i: number = proposalTallies.length - 1; i > -1; --i) {
-            tmp = proposalTallies[i].amountOfJudgments;
+            tmp = proposalTallies[i].voteAmount;
 
             if (tmp > amountOfJudges) amountOfJudges = tmp;
         }
