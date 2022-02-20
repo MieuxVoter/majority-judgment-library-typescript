@@ -23,7 +23,7 @@ This typescript package helps to resolve polls using [Majority Judgment](https:/
 
 ## Get started
 
-### Random sample
+### Majority judgment from ballots
 
 ```typescript
 import {
@@ -63,7 +63,7 @@ function fillTallyCollectorWithRandomVote(tally: TallyCollector, voterAmount: nu
 }
 ```
 
-### Knewn datas
+### Known datas
 
 ```typescript
 import {
@@ -97,7 +97,7 @@ for (let i: number = 0; i < proposalAmount; i++)
 // Note: the sum vote in proposal must be equal. If not, the deliberator will throw an error.
 ```
 
-### Prevent error when vote amount is not the same for each proposal
+### Majority judgment where voters did not vote for every proposal
 
 ```typescript
 import { ITally, Proposal, NormalizedTally } from "majority-judgment";
@@ -118,4 +118,4 @@ Usual git flow: clone, tinker, request a merge.
 
 ## Authors
 
-This package was made by [MieuxVoter](https://mieuxvoter.fr/), a french nonprofit.
+This package was made by [MieuxVoter](https://mieuxvoter.fr/), a French nonprofit.
