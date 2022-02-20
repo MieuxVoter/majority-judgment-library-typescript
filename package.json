@@ -11,7 +11,9 @@
         "README.md"
     ],
     "author": {
-        "name": "MieuxVoter"
+        "name": "MieuxVoter",
+        "email": "tech@mieuxvoter.fr",
+        "url": "https://mieuxvoter.fr/"
     },
     "license": "MIT",
     "scripts": {
