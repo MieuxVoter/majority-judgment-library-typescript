@@ -3,6 +3,9 @@ import { IProposal } from "./IProposal";
 export class Proposal implements IProposal {
     protected _meritProfile: bigint[];
 
+    /**
+     * Per mention index, the amount of vote. Mention indexes are sorted from "worst" ("most conservative") to "best" mention.
+     */
     public get meritProfile(): bigint[] {
         return this._meritProfile;
     }
@@ -19,6 +22,11 @@ export class Proposal implements IProposal {
         return new Proposal(this._meritProfile.slice());
     }
 
+    /**
+     * Move votes that were {@link fromMentionIndex} into {@link intoMentionIndex}. Used by the score calculus.
+     * @param fromMentionIndex the amount at this index will be set to 0
+     * @param intoMentionIndex the amount at {@param fromMentionIndex} will be added to the amount at {@param intoMentionIndex}
+     */
     public moveVotes(fromMentionIndex: number, intoMentionIndex: number): void {
         const maxIndex = this.mentionAmount - 1;
 
