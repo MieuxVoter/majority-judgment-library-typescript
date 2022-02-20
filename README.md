@@ -17,6 +17,10 @@ This typescript package helps to resolve polls using [Majority Judgment](https:/
 -   Room for Central Judgment and Usual Judgment
 -   Unit-tested (run `npm run converage`)
 
+## Install
+
+`npm install majority-judgment`
+
 ## Get started
 
 ### Random sample
