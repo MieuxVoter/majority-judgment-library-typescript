@@ -75,12 +75,12 @@ import {
     Proposal,
 } from "majority-judgment";
 
-const meritProfilSample: bigint[] = [4n, 0n, 2n, 1n];
+const meritProfileSample: bigint[] = [4n, 0n, 2n, 1n];
 // index 0 = worst mention, 4 vote
 // max index (3) = best mention, 1 vote
 
 const tally: ITally = new Tally([
-    new Proposal(meritProfilSample),
+    new Proposal(meritProfileSample),
     new Proposal([2n, 1n, 0n, 4n]),
     new Proposal([3n, 2n, 1n, 1n]),
 ]);

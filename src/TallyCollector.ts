@@ -69,7 +69,7 @@ export class TallyCollector implements ITally {
                 })`
             );
 
-        const meritProfil: bigint[] = this.proposals[proposalIndex].meritProfile;
-        meritProfil[mentionIndex] += 1n;
+        const meritProfile: bigint[] = this.proposals[proposalIndex].meritProfile;
+        meritProfile[mentionIndex] += 1n;
     }
 }
