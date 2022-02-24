@@ -6,7 +6,7 @@ export class TallyCollector implements ITally {
 
     public constructor(proposalAmount: number, mentionAmount: number) {
         if (proposalAmount < 1) throw new Error("Proposal amount must be greater or equal to 1");
-        if (mentionAmount < 1) throw new Error("Mention amount must be greater or equal to 1");
+        if (mentionAmount < 2) throw new Error("Mention amount must be greater or equal to 2");
 
         let meritProfile: bigint[];
 
