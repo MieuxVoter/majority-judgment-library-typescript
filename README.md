@@ -19,7 +19,7 @@ This typescript package helps to resolve polls using [Majority Judgment](https:/
 
 ## Install
 
-`npm install majority-judgment`
+`npm install scalable-majority-judgment`
 
 ## Get started
 
