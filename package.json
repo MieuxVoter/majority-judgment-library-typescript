@@ -16,6 +16,10 @@
         "url": "https://mieuxvoter.fr/"
     },
     "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/MieuxVoter/majority-judgment-library-typescript"
+    },
     "scripts": {
         "build": "tsc",
         "test": "jest",
