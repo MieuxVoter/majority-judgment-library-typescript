@@ -1,6 +1,6 @@
 {
     "name": "scalable-majority-judgment",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "browserslist": "> 0.5%, last 2 versions, not dead",
     "main": "dist/index",
     "types": "dist/index",
