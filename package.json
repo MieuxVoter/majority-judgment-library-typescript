@@ -1,5 +1,5 @@
 {
-    "name": "majority-judgment",
+    "name": "scalable-majority-judgment",
     "version": "0.1.0",
     "browserslist": "> 0.5%, last 2 versions, not dead",
     "main": "dist/index",
