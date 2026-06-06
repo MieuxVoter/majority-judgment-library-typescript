@@ -5,7 +5,7 @@
 [![Build Status](https://img.shields.io/github/workflow/status/MieuxVoter/majority-judgment-library-typescript/NPM%20publish%20CD%20workflow?style=for-the-badge)](https://github.com/MieuxVoter/majority-judgment-library-typescript/actions/workflows/cd.yml)
 [![Code Quality](https://img.shields.io/codefactor/grade/github/MieuxVoter/majority-judgment-library-typescript?style=for-the-badge)](https://www.codefactor.io/repository/github/mieuxvoter/majority-judgment-library-typescript)
 ![LoC](https://img.shields.io/tokei/lines/github/MieuxVoter/majority-judgment-library-typescript?style=for-the-badge)
-[![Discord Chat](https://img.shields.io/discord/705322981102190593.svg?style=for-the-badge)](https://discord.gg/rAAQG9S)
+[![Discord Chat](https://img.shields.io/discord/705322981102190593.svg?style=for-the-badge)](https://discord.gg/k9YRuZPSZs)
 
 This typescript package helps to resolve polls using [Majority Judgment](https://fr.wikipedia.org/wiki/Jugement_majoritaire).
 
